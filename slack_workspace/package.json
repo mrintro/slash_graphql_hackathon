@@ -1,9 +1,10 @@
 {
   "name": "slack_workspace",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "app.js",
   "dependencies": {
-    "@slack/bolt": "^2.4.1"
+    "@slack/bolt": "^2.4.1",
+    "dotenv": "^8.2.0"
   },
   "devDependencies": {},
   "scripts": {
