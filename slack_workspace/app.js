@@ -7,8 +7,13 @@ const app = new App({
     signingSecret : process.env.SIGNING_SECRET
 });
 
+app.event('app_home_opened', ({event, say}) => {
+    console.log("bot started successfully");
+    say(`bot here  , <@${event.user}>!`);
+});
 
-const start_app = (async () =>{
-    await app.start(process.env.PORT);
+(async () =>{
+    await app.start(3000);
+    console.log(process.env.SLACK_APP_TOKEN_ID)
     console.log("Bot Active");
 })();
