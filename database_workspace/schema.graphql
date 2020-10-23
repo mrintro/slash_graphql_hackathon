@@ -1,20 +1,31 @@
-type User{
-    username: String! @id
-	name: String!
-    tasks: [Task] @hasInverse(field: owner)
-    friends: [User]
-    bestFriends: [User]
-	tasksPosted: [Task]
-    tasksDone: [Task]
+type User {
+    username: String! @id @search(by: [hash , regexp])
+    name: String! @search(by: [hash , regexp])
+    friends: [User] @hasInverse(field: friends)
+    sent_requests: [User]
+    received_requests: [User]
+    best_friends: [User] @hasInverse(field: best_friends)
+    active_tasks: [Task] @hasInverse(field: posted_by)
+    closed_tasks: [Task] 
+    volunteered_tasks: [Task] @hasInverse(field: volunteered_by)
+    assigned_tasks: [Task] @hasInverse(field: alloted_to)
 }
 
-type Task{
-    id: ID!
-	title: String!
-    description: String!
-    owner: User!
-	volunteeredBy: [User]
-	allotedTo: User
-    completed: Boolean! 
-    completedBy: User
+type Task {
+    task_id: ID!
+    title: String! @search(by: [hash , regexp])
+    description: String! 
+    deadline: String!
+    posted_by: User! @hasInverse(field: active_tasks)
+    volunteered_by: [User] @hasInverse(field: volunteered_tasks)
+    alloted_to: User @hasInverse(field: assigned_tasks)
+    status: TaskStatus!
+}
+
+enum TaskStatus{
+    uploaded
+    volunteered
+    assigned
+    completed
+    deleted
 }
