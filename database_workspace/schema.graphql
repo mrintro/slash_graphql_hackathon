@@ -1,0 +1,20 @@
+type User{
+    username: String! @id
+	name: String!
+    tasks: [Task] @hasInverse(field: owner)
+    friends: [User]
+    bestFriends: [User]
+	tasksPosted: [Task]
+    tasksDone: [Task]
+}
+
+type Task{
+    id: ID!
+	title: String!
+    description: String!
+    owner: User!
+	volunteeredBy: [User]
+	allotedTo: User
+    completed: Boolean! 
+    completedBy: User
+}
