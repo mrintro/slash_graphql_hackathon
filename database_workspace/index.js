@@ -41,7 +41,7 @@ function executeQueryOrMutation(operationsDoc , operationName){
 }
 
 /* ADD A USER */
-function AddUser(id , username , name , email , profile_picture){
+const addUser = function AddUser(id , username , name , email , profile_picture){
     const operationsDoc = `
     mutation AddUser {
         addUser(input: [
@@ -124,7 +124,7 @@ function GetUserWithUsername(username){
 }
 
 /* GET ALL USERS WITH NAME */
-function GetUsersWithName(name){
+const searchUserWithName = function GetUsersWithName(name){
     const operationsDoc = `
     query GetUsersWithName {
         queryUser(filter: {name: {anyofterms: "` + name +`"}}) {
@@ -523,3 +523,8 @@ function RemoveBestFriend(my_user_id , friend_user_id){
 // AcceptFriendRequest("002" , "001");
 // RemoveFriend("001" , "002");
 // RemoveBestFriend("003" , "002");
+
+module.exports = {
+  "addUser" : addUser,
+  "searchUserWithName" : this.searchUserWithName
+}
