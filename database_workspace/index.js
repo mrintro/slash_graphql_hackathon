@@ -127,7 +127,7 @@ function GetUserWithUsername(username){
 function GetUsersWithName(name){
     const operationsDoc = `
     query GetUsersWithName {
-        queryUser(filter: {name: {anyofterms: "` + name +`"}}) {
+        queryUser(filter: {name: {regexp: "/.*` + name + `.*/"}}) {
         name
         username
         email
@@ -135,9 +135,7 @@ function GetUsersWithName(name){
         }
     }
     `;
-
     executeQueryOrMutation(operationsDoc , "GetUsersWithName");
-
 }
 
 /* VIEW MY FRIENDS */
@@ -510,8 +508,8 @@ function RemoveBestFriend(my_user_id , friend_user_id){
 // AddUser("003" , "ria0412" , "Ria Jain" , "ria0412@gmail.com" , "pic_ria");
 // GetUsers();
 // GetUserWithUsername("shashank2409");
-// GetUsersWithName("shashank");
-// GetUsersWithName("Gupta");
+// GetUsersWithName("Shashank");
+GetUsersWithName("sha");
 // AddFriend("b" , "h");
 // AddBestFriend("a" , "c");
 // SendBestFriendRequest("002" , "003");
