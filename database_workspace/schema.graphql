@@ -1,9 +1,16 @@
 type User {
-    username: String! @id @search(by: [hash , regexp])
-    name: String! @search(by: [hash , regexp])
+    user_id: String! @id @search(by: [hash])
+    username: String! @search(by: [hash , regexp])
+    name: String! @search(by: [term , regexp])
+    email: String! @search(by: [hash])
+    profile_picture: String
+
+    block_list: [User]
     friends: [User] @hasInverse(field: friends)
-    sent_requests: [User]
+    sent_requests: [User] @hasInverse(field: received_requests)
     received_requests: [User]
+    sent_best_friend_requests: [User] @hasInverse(field: received_best_friend_requests)
+    received_best_friend_requests: [User]
     best_friends: [User] @hasInverse(field: best_friends)
     active_tasks: [Task] @hasInverse(field: posted_by)
     closed_tasks: [Task] 
