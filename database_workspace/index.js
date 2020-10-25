@@ -112,6 +112,7 @@ function GetUserWithUsername(username){
     const operationsDoc = `
     query GetUserWithUsername {
         queryUser(filter: {username: {eq: "` + username + `"}}) {
+          user_id
           name
           username
           email
@@ -128,10 +129,11 @@ function GetUsersWithName(name){
     const operationsDoc = `
     query GetUsersWithName {
         queryUser(filter: {name: {regexp: "/.*` + name + `.*/"}}) {
-        name
-        username
-        email
-        profile_picture
+            user_id
+            name
+            username
+            email
+            profile_picture
         }
     }
     `;
@@ -505,7 +507,7 @@ function RemoveBestFriend(my_user_id , friend_user_id){
     executeQueryOrMutation(operationsDoc , "RemoveBestFriend");
 }
 
-// AddUser("003" , "ria0412" , "Ria Jain" , "ria0412@gmail.com" , "pic_ria");
+// AddUser("004" , "shashank2307" , "Shashank Arora" , "shashank2307@gmail.com" , "pic_shashank");
 // GetUsers();
 // GetUserWithUsername("shashank2409");
 // GetUsersWithName("Shashank");

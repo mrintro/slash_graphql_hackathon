@@ -2,7 +2,7 @@ type User {
     user_id: String! @id @search(by: [hash])
     username: String! @search(by: [hash , regexp])
     name: String! @search(by: [term , regexp])
-    email: String! @search(by: [hash])
+    email: String @search(by: [hash])
     profile_picture: String
 
     block_list: [User]
