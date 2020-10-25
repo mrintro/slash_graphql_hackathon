@@ -95,7 +95,7 @@ function GetUsers(){
 
 /* GET USER WITH USER_ID FOR EXACT DETAILS */
 function GetUserWithUserId(user_id){
-    const operationDoc = `query GetUserWithUserId{
+    const operationsDoc = `query GetUserWithUserId{
         getUser(user_id: "` + user_id + `"){
           user_id
           username
@@ -140,6 +140,7 @@ function GetUsersWithName(name){
 
 }
 
+/* VIEW MY FRIENDS */
 function GetMyFriends(user_id){
     const operationsDoc = `
     query GetMyFriends {
@@ -155,9 +156,57 @@ function GetMyFriends(user_id){
   executeQueryOrMutation(operationsDoc , "GetMyFriends");
 }
 
+/* VIEW MY BEST FRIENDS */
+function GetMyBestFriends(user_id){
+    const operationsDoc = `
+    query GetMyBestFriends {
+        getUser(user_id: "` + user_id + `") {
+           best_friends{
+             user_id
+             username
+           }
+         }
+       }
+  `;
+  
+  executeQueryOrMutation(operationsDoc , "GetMyBestFriends");
+}
+
+/* VIEW MY RECEIVED REQUESTS */
+function GetMyReceivedRequests(user_id){
+    const operationsDoc = `
+    query GetMyReceivedRequests {
+        getUser(user_id: "` + user_id + `") {
+            received_requests{
+             user_id
+             username
+           }
+         }
+       }
+  `;
+  
+  executeQueryOrMutation(operationsDoc , "GetMyReceivedRequests");
+}
+
+/* VIEW MY SENT REQUESTS */
+function GetMySentRequests(user_id){
+    const operationsDoc = `
+    query GetMySentRequests {
+        getUser(user_id: "` + user_id + `") {
+           sent_requests{
+             user_id
+             username
+           }
+         }
+       }
+  `;
+  
+  executeQueryOrMutation(operationsDoc , "GetMySentRequests");
+}
+
 /* SEND FRIEND REQUEST */
 function SendFriendRequest(my_user_id , friend_user_id){
-    const operationDoc = `mutation SendFriendRequest{
+    const operationsDoc = `mutation SendFriendRequest{
         updateUser(input: {
           filter: {
             user_id: {
@@ -188,15 +237,63 @@ function SendFriendRequest(my_user_id , friend_user_id){
     executeQueryOrMutation(operationsDoc , "SendFriendRequest");
 }
 
-function AcceptRequest(user_id){
-    
+/* SEND BEST FRIEND REQUEST */
+function SendBestFriendRequest(my_user_id , friend_user_id){
+    const operationsDoc = `mutation SendBestFriendRequest{
+        updateUser(input: {
+          filter: {
+            user_id: {
+              eq: "` + my_user_id + `"
+            }
+          }
+          set: {
+            sent_best_friend_requests: [
+              {
+                user_id: "` + friend_user_id + `"
+              }
+            ]
+          }
+        }){
+          user{
+            user_id
+            username
+            name
+            sent_requests{
+              user_id
+              username
+              name
+            }
+          }
+        }
+      }
+    `;
+    executeQueryOrMutation(operationsDoc , "SendBestFriendRequest");
 }
 
-/* ADD FRIEND */
-function AddFriend(username , friendUsername){
-    const operationsDoc = `
-        mutation AddFriend {
-        updateUser(input: {filter: {username: {eq: "` + username + `"}}, set: {friends: [{username: "` + friendUsername + `"}]}}) {
+function AcceptFriendRequest(my_user_id , friend_user_id){
+    const operationsDoc = `mutation AcceptFriendRequest {
+        updateUser(input: 
+          {
+            filter: 
+            {
+              user_id: 
+              {
+                eq: "` + my_user_id + `"
+              }
+            }, 
+            set:{
+              friends: [{
+                user_id: "` + friend_user_id + `"
+              }]
+            },
+            remove:{
+              received_requests: [
+                {
+                    user_id: "` + friend_user_id + `"
+                }
+              ]
+            }
+          }){
             user {
             username
             name
@@ -204,45 +301,225 @@ function AddFriend(username , friendUsername){
                 username
                 name
             }
+            received_requests{
+              username
+              name
             }
+         }
         }
-        }
-        `;
-    executeQueryOrMutation(operationsDoc , "GetMyFriends");
+      }
+    `;
+    executeQueryOrMutation(operationsDoc , "AcceptFriendRequest");
 }
 
-/* ADD BEST FRIEND BUT DELETE THE PERSON FROM FRIENDS LIST */
-function AddBestFriend(username , friendUsername){
-    const operationsDoc = `
-        mutation AddBestFriend {
-            updateUser(input: 
-            {filter: {username: {eq: "`+ username + `"}}, 
-                remove: {friends: [{username: "` + friendUsername + `"}]}, 
-                set: {best_friends: [{username: "` + friendUsername + `"}]}
-            }){
-            user{
+function declineFriendRequest(my_user_id , friend_user_id){
+    const operationsDoc = `mutation declineFriendRequest {
+        updateUser(input: 
+          {
+            filter: 
+            {
+              user_id: 
+              {
+                eq: "` + my_user_id + `"
+              }
+            }, 
+            remove:{
+              received_requests: [
+                {
+                    user_id: "` + friend_user_id + `"
+                }
+              ]
+            }
+          }){
+            user {
             username
             name
-            friends{
+            friends {
                 username
                 name
             }
-            best_friends{
-                username
-                name
+            received_requests{
+              username
+              name
             }
-            }
+         }
         }
-    }
+      }
     `;
-
+    executeQueryOrMutation(operationsDoc , "declineFriendRequest");
 }
 
+function AcceptBestFriendRequest(my_user_id , friend_user_id){
+    const operationsDoc = `mutation AcceptBestFriendRequest {
+        updateUser(input: 
+          {
+            filter: 
+            {
+              user_id: 
+              {
+                eq: "` + my_user_id + `"
+              }
+            }, 
+            set:{
+              best_friends: [{
+                user_id: "` + friend_user_id + `"
+              }]
+            },
+            remove:{
+              received_best_friend_requests: [
+                {
+                    user_id: "` + friend_user_id + `"
+                }
+              ],
+              friends: [
+                {
+                  user_id: "` + friend_user_id + `"
+                }
+              ]
+            }
+          }){
+            user {
+            username
+            name
+            friends {
+                username
+                name
+            }
+            received_requests{
+              username
+              name
+            }
+         }
+        }
+      }
+    `;
+    executeQueryOrMutation(operationsDoc , "AcceptBestFriendRequest");
+}
 
-AddUser("003" , "ria0412" , "Ria Jain" , "ria0412@gmail.com" , "pic_ria");
+function declineBestFriendRequest(my_user_id , friend_user_id){
+    const operationsDoc = `mutation declineBestFriendRequest {
+        updateUser(input: 
+          {
+            filter: 
+            {
+              user_id: 
+              {
+                eq: "` + my_user_id + `"
+              }
+            }, 
+            remove:{
+              received_best_friend_requests: [
+                {
+                    user_id: "` + friend_user_id + `"
+                }
+              ]
+            }
+          }){
+            user {
+            username
+            name
+            friends {
+                username
+                name
+            }
+            received_requests{
+              username
+              name
+            }
+         }
+        }
+      }
+    `;
+    executeQueryOrMutation(operationsDoc , "declineBestFriendRequest");
+}
+
+function RemoveFriend(my_user_id , friend_user_id){
+    const operationsDoc = `mutation RemoveFriend {
+        updateUser(input: 
+          {
+            filter: 
+            {
+              user_id: 
+              {
+                eq: "` + my_user_id + `"
+              }
+            }, 
+            remove:{
+              friends: [
+                {
+                    user_id: "` + friend_user_id + `"
+                }
+              ]
+            }
+          }){
+            user {
+            username
+            name
+            friends {
+                username
+                name
+            }
+            received_requests{
+              username
+              name
+            }
+         }
+        }
+      }
+    `;
+    executeQueryOrMutation(operationsDoc , "RemoveFriend");
+}
+
+function RemoveBestFriend(my_user_id , friend_user_id){
+    const operationsDoc = `mutation RemoveBestFriend {
+        updateUser(input: 
+          {
+            filter: 
+            {
+              user_id: 
+              {
+                eq: "` + my_user_id + `"
+              }
+            }, 
+            remove:{
+              best_friends: [
+                {
+                    user_id: "` + friend_user_id + `"
+                }
+              ]
+            }
+          }){
+            user {
+            username
+            name
+            friends {
+                username
+                name
+            }
+            received_requests{
+              username
+              name
+            }
+         }
+        }
+      }
+    `;
+    executeQueryOrMutation(operationsDoc , "RemoveBestFriend");
+}
+
+// AddUser("003" , "ria0412" , "Ria Jain" , "ria0412@gmail.com" , "pic_ria");
 // GetUsers();
 // GetUserWithUsername("shashank2409");
 // GetUsersWithName("shashank");
 // GetUsersWithName("Gupta");
 // AddFriend("b" , "h");
 // AddBestFriend("a" , "c");
+// SendBestFriendRequest("002" , "003");
+// AcceptBestFriendRequest("001" , "003");
+// SendFriendRequest("002" , "003");
+// AcceptBestFriendRequest("003" , "002");
+// declineFriendRequest("003" , "002");
+// SendFriendRequest("001" , "002");
+// AcceptFriendRequest("002" , "001");
+// RemoveFriend("001" , "002");
+// RemoveBestFriend("003" , "002");

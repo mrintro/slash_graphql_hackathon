@@ -9,6 +9,8 @@ type User {
     friends: [User] @hasInverse(field: friends)
     sent_requests: [User] @hasInverse(field: received_requests)
     received_requests: [User]
+    sent_best_friend_requests: [User] @hasInverse(field: received_best_friend_requests)
+    received_best_friend_requests: [User]
     best_friends: [User] @hasInverse(field: best_friends)
     active_tasks: [Task] @hasInverse(field: posted_by)
     closed_tasks: [Task] 
