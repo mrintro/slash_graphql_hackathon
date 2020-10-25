@@ -1,0 +1,90 @@
+DOCKER RUN
+docker run --rm -it -p 8080:8080 -p 9080:9080 -p 8000:8000 -v ~/dgraph:/dgraph dgraph/standalone:v20.03.0
+
+UPDATE SCHEMA
+curl -X POST localhost:8080/admin/schema --data-binary '@schema.graphql'
+
+
+GET USERS
+{queryUser(filter: {}){username name friends{ username name}}}
+
+
+GET_USER_WITH_USERNAME
+{
+  getUser(username: "a"){
+    username
+    name
+    friends{
+      username
+      name
+    }
+  }
+}
+
+
+ADD USER
+mutation AddUser{
+  addUser(input:[{
+    username: "e",
+    name: "E"
+  }])
+  {
+    user{
+      username
+      name
+      friends{
+        username
+        name
+      }
+    }
+  }
+}
+
+ADD FRIEND
+mutation UpdateUser{
+  updateUser(input: {
+    filter: {
+      username: {
+        eq: "a"
+      }
+    }
+    set: {
+      friends: [
+        {
+          username: "h"
+        }
+      ]
+    }
+  }){
+    user{
+      username
+      name
+      friends{
+        username
+        name
+      }
+    }
+  }
+}
+
+ADD BEST FRIEND
+mutation AddBestFriend {
+    updateUser(input: 
+      {filter: {username: {eq: "a"}}, 
+        remove: {friends: [{username: "b"}]}, 
+        set: {best_friends: [{username: "b"}]}
+      }){
+    user{
+      username
+      name
+      friends{
+        username
+        name
+      }
+      best_friends{
+        username
+        name
+      }
+    }
+  }
+}
