@@ -1,8 +1,9 @@
 const fetch = require('node-fetch');
+const database_url = "http://localhost:8080/graphql";
 
 async function fetchGraphQL(operationsDoc, operationName, variables) {
     const result = await fetch(
-      "http://localhost:8080/graphql",
+      database_url,
       {
         method: "POST",
         headers: {
@@ -35,7 +36,7 @@ async function fetchGraphQL(operationsDoc, operationName, variables) {
       console.error(errors);
       return errors;
     }
-    console.log("executing");
+    // console.log("executing");
     console.log(data);
     return await data;
   }
