@@ -2,6 +2,7 @@ const fetch = require('node-fetch');
 
 
 function fetchGraphQL(operationsDoc, operationName, variables) {
+  console.log("replying to query")
     return fetch(
         "http://localhost:8080/graphql",
         {
@@ -19,7 +20,7 @@ function fetchGraphQL(operationsDoc, operationName, variables) {
 }
 
 function executeQueryOrMutation(operationsDoc , operationName){
-    function fetchMyQuery() {
+      function fetchMyQuery() {
         return fetchGraphQL(
             operationsDoc,
             operationName,
@@ -27,12 +28,11 @@ function executeQueryOrMutation(operationsDoc , operationName){
         );
         }
     
-        fetchMyQuery()
+        return fetchMyQuery()
         .then(({ data, errors }) => {
             if (errors) {
             console.error(errors);
             }
-            console.log(data);
             // console.log(data["queryUser"]);
         })
         .catch((error) => {
@@ -41,7 +41,7 @@ function executeQueryOrMutation(operationsDoc , operationName){
 }
 
 /* ADD A USER */
-const addUser = function AddUser(id , username , name , email , profile_picture){
+const AddUser = function (id , username , name , email , profile_picture){
     const operationsDoc = `
     mutation AddUser {
         addUser(input: [
@@ -68,7 +68,7 @@ const addUser = function AddUser(id , username , name , email , profile_picture)
 }
 
 /* GET ALL USERS(ONLY FOR ADMINS) */
-function GetUsers(){
+const GetUsers = async function(){
     const operationsDoc = `
     query GetAllUsers {
       queryUser(order: {asc: username}) {
@@ -89,8 +89,10 @@ function GetUsers(){
       }
     }
   `;
-  executeQueryOrMutation(operationsDoc , "GetAllUsers");
-  
+  console.log("getting response");
+  let response = executeQueryOrMutation(operationsDoc , "GetAllUsers");
+  console.log("rec res",response);
+  return response;
 }
 
 /* GET USER WITH USER_ID FOR EXACT DETAILS */
@@ -124,7 +126,7 @@ function GetUserWithUsername(username){
 }
 
 /* GET ALL USERS WITH NAME */
-const searchUserWithName = function GetUsersWithName(name){
+const searchUserWithName = function(name){
     const operationsDoc = `
     query GetUsersWithName {
         queryUser(filter: {name: {regexp: "/.*` + name + `.*/"}}) {
@@ -135,7 +137,10 @@ const searchUserWithName = function GetUsersWithName(name){
         }
     }
     `;
-    executeQueryOrMutation(operationsDoc , "GetUsersWithName");
+    console.log("getting response");
+    let response = executeQueryOrMutation(operationsDoc , "GetUsersWithName");
+    console.log("rec res",response);
+    return response;
 }
 
 /* VIEW MY FRIENDS */
@@ -508,8 +513,8 @@ function RemoveBestFriend(my_user_id , friend_user_id){
 // AddUser("003" , "ria0412" , "Ria Jain" , "ria0412@gmail.com" , "pic_ria");
 // GetUsers();
 // GetUserWithUsername("shashank2409");
-// GetUsersWithName("Shashank");
-GetUsersWithName("sha");
+// searchUserWithName("Aniket");
+// GetUsersWithName("sha");
 // AddFriend("b" , "h");
 // AddBestFriend("a" , "c");
 // SendBestFriendRequest("002" , "003");
@@ -523,6 +528,7 @@ GetUsersWithName("sha");
 // RemoveBestFriend("003" , "002");
 
 module.exports = {
-  "addUser" : addUser,
-  "searchUserWithName" : this.searchUserWithName
+  "addUser" : AddUser,
+  "searchUserWithName" : searchUserWithName,
+  "getUsers" : GetUsers
 }
