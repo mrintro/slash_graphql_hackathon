@@ -1,13 +1,9 @@
 const fetch = require('node-fetch');
-
-
-
-
-
+const database_url = "http://localhost:8080/graphql";
 
 async function fetchGraphQL(operationsDoc, operationName, variables) {
     const result = await fetch(
-      "http://localhost:8080/graphql",
+      database_url,
       {
         method: "POST",
         headers: {
@@ -24,8 +20,8 @@ async function fetchGraphQL(operationsDoc, operationName, variables) {
   }
 
   
-  function fetchGetAllUsers(operationsDoc , operationName) {
-    return fetchGraphQL(
+  async function fetchGetAllUsers(operationsDoc , operationName) {
+    return await fetchGraphQL(
       operationsDoc,
       operationName,
       {}
@@ -41,7 +37,7 @@ async function fetchGraphQL(operationsDoc, operationName, variables) {
       return errors;
     }
     // console.log("executing");
-    // console.log(data);
+    console.log(data);
     return await data;
   }
 
@@ -100,7 +96,7 @@ const GetUsers = async function(){
 }
 
 /* GET USER WITH USER_ID FOR EXACT DETAILS */
-function GetUserWithUserId(user_id){
+const GetUserWithUserId = async function (user_id){
     const operationsDoc = `query GetUserWithUserId{
         getUser(user_id: "` + user_id + `"){
           user_id
@@ -110,11 +106,12 @@ function GetUserWithUserId(user_id){
         }
       }
     `;
-    executeQueryOrMutation(operationsDoc , "GetUserWithUserId");
+    const response = await executeQueryOrMutation(operationsDoc , "GetUserWithUserId");
+    return response;
 }
 
 /* GET A USER WITH USERNAME */
-function GetUserWithUsername(username){
+const GetUserWithUsername = async function (username){
     const operationsDoc = `
     query GetUserWithUsername {
         queryUser(filter: {username: {eq: "` + username + `"}}) {
@@ -126,14 +123,14 @@ function GetUserWithUsername(username){
         }
       }
     `;
-    executeQueryOrMutation(operationsDoc , "GetUserWithUsername");
-    
+    const response = await executeQueryOrMutation(operationsDoc , "GetUserWithUsername");
+    return response;
 }
 
 /* GET ALL USERS WITH NAME */
-const searchUserWithName = async function(name){
+const SearchUserWithName = async function(name){
     const operationsDoc = `
-    query GetUsersWithName {
+    query GetUsersWithName  {
         queryUser(filter: {name: {regexp: "/.*` + name + `.*/"}}) {
             user_id
             name
@@ -144,13 +141,13 @@ const searchUserWithName = async function(name){
     }
     `;
     console.log("getting response");
-    let response = await executeQueryOrMutation(operationsDoc , "GetUsersWithName");
-    console.log("rec res",response);
+    const response = await executeQueryOrMutation(operationsDoc , "GetUsersWithName");
+    console.log("rec res ",response);
     return response;
 }
 
 /* VIEW MY FRIENDS */
-function GetMyFriends(user_id){
+const GetMyFriends = async function (user_id){
     const operationsDoc = `
     query GetMyFriends {
         getUser(user_id: "` + user_id + `") {
@@ -162,11 +159,12 @@ function GetMyFriends(user_id){
        }
   `;
   
-  executeQueryOrMutation(operationsDoc , "GetMyFriends");
+  const response = await executeQueryOrMutation(operationsDoc , "GetMyFriends");
+  return response;
 }
 
 /* VIEW MY BEST FRIENDS */
-function GetMyBestFriends(user_id){
+const GetMyBestFriends = async function (user_id){
     const operationsDoc = `
     query GetMyBestFriends {
         getUser(user_id: "` + user_id + `") {
@@ -178,11 +176,12 @@ function GetMyBestFriends(user_id){
        }
   `;
   
-  executeQueryOrMutation(operationsDoc , "GetMyBestFriends");
+  const response = await executeQueryOrMutation(operationsDoc , "GetMyBestFriends");
+  return response;
 }
 
 /* VIEW MY RECEIVED REQUESTS */
-function GetMyReceivedRequests(user_id){
+const GetMyReceivedRequests = async function (user_id){
     const operationsDoc = `
     query GetMyReceivedRequests {
         getUser(user_id: "` + user_id + `") {
@@ -194,11 +193,12 @@ function GetMyReceivedRequests(user_id){
        }
   `;
   
-  executeQueryOrMutation(operationsDoc , "GetMyReceivedRequests");
+  const response = await executeQueryOrMutation(operationsDoc , "GetMyReceivedRequests");
+  return response;
 }
 
 /* VIEW MY SENT REQUESTS */
-function GetMySentRequests(user_id){
+const GetMySentRequests = async function (user_id){
     const operationsDoc = `
     query GetMySentRequests {
         getUser(user_id: "` + user_id + `") {
@@ -210,11 +210,12 @@ function GetMySentRequests(user_id){
        }
   `;
   
-  executeQueryOrMutation(operationsDoc , "GetMySentRequests");
+  const response = await executeQueryOrMutation(operationsDoc , "GetMySentRequests");
+  return response;
 }
 
 /* SEND FRIEND REQUEST */
-function SendFriendRequest(my_user_id , friend_user_id){
+const SendFriendRequest = async function (my_user_id , friend_user_id){
     const operationsDoc = `mutation SendFriendRequest{
         updateUser(input: {
           filter: {
@@ -243,11 +244,12 @@ function SendFriendRequest(my_user_id , friend_user_id){
         }
       }
     `;
-    executeQueryOrMutation(operationsDoc , "SendFriendRequest");
+    const response = await executeQueryOrMutation(operationsDoc , "SendFriendRequest");
+    return response;
 }
 
 /* SEND BEST FRIEND REQUEST */
-function SendBestFriendRequest(my_user_id , friend_user_id){
+const SendBestFriendRequest = async function (my_user_id , friend_user_id){
     const operationsDoc = `mutation SendBestFriendRequest{
         updateUser(input: {
           filter: {
@@ -276,10 +278,11 @@ function SendBestFriendRequest(my_user_id , friend_user_id){
         }
       }
     `;
-    executeQueryOrMutation(operationsDoc , "SendBestFriendRequest");
+    const response = await executeQueryOrMutation(operationsDoc , "SendBestFriendRequest");
+    return response;
 }
 
-function AcceptFriendRequest(my_user_id , friend_user_id){
+const AcceptFriendRequest = async function (my_user_id , friend_user_id){
     const operationsDoc = `mutation AcceptFriendRequest {
         updateUser(input: 
           {
@@ -318,10 +321,11 @@ function AcceptFriendRequest(my_user_id , friend_user_id){
         }
       }
     `;
-    executeQueryOrMutation(operationsDoc , "AcceptFriendRequest");
+    const response = await executeQueryOrMutation(operationsDoc , "AcceptFriendRequest");
+    return response;
 }
 
-function declineFriendRequest(my_user_id , friend_user_id){
+const DeclineFriendRequest = async function (my_user_id , friend_user_id){
     const operationsDoc = `mutation declineFriendRequest {
         updateUser(input: 
           {
@@ -355,10 +359,11 @@ function declineFriendRequest(my_user_id , friend_user_id){
         }
       }
     `;
-    executeQueryOrMutation(operationsDoc , "declineFriendRequest");
+    const response = await executeQueryOrMutation(operationsDoc , "declineFriendRequest");
+    return response;
 }
 
-function AcceptBestFriendRequest(my_user_id , friend_user_id){
+const AcceptBestFriendRequest = async function (my_user_id , friend_user_id){
     const operationsDoc = `mutation AcceptBestFriendRequest {
         updateUser(input: 
           {
@@ -402,10 +407,11 @@ function AcceptBestFriendRequest(my_user_id , friend_user_id){
         }
       }
     `;
-    executeQueryOrMutation(operationsDoc , "AcceptBestFriendRequest");
+    const response = await executeQueryOrMutation(operationsDoc , "AcceptBestFriendRequest");
+    return response;
 }
 
-function declineBestFriendRequest(my_user_id , friend_user_id){
+const DeclineBestFriendRequest = async function (my_user_id , friend_user_id){
     const operationsDoc = `mutation declineBestFriendRequest {
         updateUser(input: 
           {
@@ -439,10 +445,11 @@ function declineBestFriendRequest(my_user_id , friend_user_id){
         }
       }
     `;
-    executeQueryOrMutation(operationsDoc , "declineBestFriendRequest");
+    const response = await executeQueryOrMutation(operationsDoc , "declineBestFriendRequest");
+    return response;
 }
 
-function RemoveFriend(my_user_id , friend_user_id){
+const RemoveFriend = async function (my_user_id , friend_user_id){
     const operationsDoc = `mutation RemoveFriend {
         updateUser(input: 
           {
@@ -476,10 +483,11 @@ function RemoveFriend(my_user_id , friend_user_id){
         }
       }
     `;
-    executeQueryOrMutation(operationsDoc , "RemoveFriend");
+    const response = await executeQueryOrMutation(operationsDoc , "RemoveFriend");
+    return response;
 }
 
-function RemoveBestFriend(my_user_id , friend_user_id){
+const RemoveBestFriend = async function (my_user_id , friend_user_id){
     const operationsDoc = `mutation RemoveBestFriend {
         updateUser(input: 
           {
@@ -513,28 +521,26 @@ function RemoveBestFriend(my_user_id , friend_user_id){
         }
       }
     `;
-    executeQueryOrMutation(operationsDoc , "RemoveBestFriend");
+    const response = await executeQueryOrMutation(operationsDoc , "RemoveBestFriend");
+    return response;
 }
-
-// AddUser("004" , "shashank2307" , "Shashank Arora" , "shashank2307@gmail.com" , "pic_shashank");
-// GetUsers();
-// GetUserWithUsername("shashank2409");
-// searchUserWithName("Aniket");
-// GetUsersWithName("sha");
-// AddFriend("b" , "h");
-// AddBestFriend("a" , "c");
-// SendBestFriendRequest("002" , "003");
-// AcceptBestFriendRequest("001" , "003");
-// SendFriendRequest("002" , "003");
-// AcceptBestFriendRequest("003" , "002");
-// declineFriendRequest("003" , "002");
-// SendFriendRequest("001" , "002");
-// AcceptFriendRequest("002" , "001");
-// RemoveFriend("001" , "002");
-// RemoveBestFriend("003" , "002");
 
 module.exports = {
   "addUser" : AddUser,
-  "searchUserWithName" : searchUserWithName,
-  "getUsers" : GetUsers
+  "getUsers" : GetUsers,
+  "getUserWithUserId" : GetUserWithUserId,
+  "GetUserWithUsername" : GetUserWithUsername,
+  "searchUserWithName" : SearchUserWithName,
+  "getMyFriends" : GetMyFriends,
+  "getMyBestFriends" : GetMyBestFriends,
+  "getMyReceivedRequests" : GetMyReceivedRequests,
+  "getMySentRequests" : GetMySentRequests,
+  "sendFriendRequest" : SendFriendRequest,
+  "sendBestFriendRequest" : SendBestFriendRequest,
+  "acceptFriendRequest" : AcceptFriendRequest,
+  "declineFriendRequest" : DeclineFriendRequest,
+  "acceptBestFriendRequest" : AcceptBestFriendRequest,
+  "declineBestFriendRequest" : DeclineBestFriendRequest,
+  "removeFriend" : RemoveFriend,
+  "removeBestFriend" :  RemoveBestFriend
 }
