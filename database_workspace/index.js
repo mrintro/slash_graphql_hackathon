@@ -131,7 +131,7 @@ function GetUserWithUsername(username){
 }
 
 /* GET ALL USERS WITH NAME */
-const searchUserWithName = function(name){
+const searchUserWithName = async function(name){
     const operationsDoc = `
     query GetUsersWithName {
         queryUser(filter: {name: {regexp: "/.*` + name + `.*/"}}) {
@@ -144,7 +144,7 @@ const searchUserWithName = function(name){
     }
     `;
     console.log("getting response");
-    let response = executeQueryOrMutation(operationsDoc , "GetUsersWithName");
+    let response = await executeQueryOrMutation(operationsDoc , "GetUsersWithName");
     console.log("rec res",response);
     return response;
 }
@@ -517,7 +517,7 @@ function RemoveBestFriend(my_user_id , friend_user_id){
 }
 
 // AddUser("004" , "shashank2307" , "Shashank Arora" , "shashank2307@gmail.com" , "pic_shashank");
-GetUsers();
+// GetUsers();
 // GetUserWithUsername("shashank2409");
 // searchUserWithName("Aniket");
 // GetUsersWithName("sha");
