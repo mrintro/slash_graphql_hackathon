@@ -1,47 +1,53 @@
 const fetch = require('node-fetch');
 
 
-function fetchGraphQL(operationsDoc, operationName, variables) {
-    return fetch(
-        "http://localhost:8080/graphql",
-        {
+
+
+
+
+async function fetchGraphQL(operationsDoc, operationName, variables) {
+    const result = await fetch(
+      "http://localhost:8080/graphql",
+      {
         method: "POST",
         headers: {
-            "Content-Type": "application/json"
+          "Content-Type": "application/json"
         },
         body: JSON.stringify({
-            query: operationsDoc,
-            variables: variables,
-            operationName: operationName
+          query: operationsDoc,
+          variables: variables,
+          operationName: operationName
         })
-        }
-    ).then((result) => result.json());
-}
+      }
+    );
+    return await result.json();
+  }
 
-function executeQueryOrMutation(operationsDoc , operationName){
-    function fetchMyQuery() {
-        return fetchGraphQL(
-            operationsDoc,
-            operationName,
-            {}
-        );
-        }
-    
-        fetchMyQuery()
-        .then(({ data, errors }) => {
-            if (errors) {
-            console.error(errors);
-            }
-            console.log(data);
-            // console.log(data["queryUser"]);
-        })
-        .catch((error) => {
-            console.error(error);
-        });
-}
+  
+  function fetchGetAllUsers(operationsDoc , operationName) {
+    return fetchGraphQL(
+      operationsDoc,
+      operationName,
+      {}
+    );
+  }
+  
+  async function executeQueryOrMutation(operationsDoc , operationName) {
+    const { errors, data } = await fetchGetAllUsers(operationsDoc , operationName);
+  
+    if (errors) {
+      // handle those errors like a pro
+      console.error(errors);
+      return errors;
+    }
+    // console.log("executing");
+    // console.log(data);
+    return await data;
+  }
+
 
 /* ADD A USER */
-function AddUser(id , username , name , email , profile_picture){
+async function AddUser(id , username , name , email , profile_picture){
     const operationsDoc = `
     mutation AddUser {
         addUser(input: [
@@ -64,11 +70,12 @@ function AddUser(id , username , name , email , profile_picture){
     }
     `;
     console.log(operationsDoc);
-    executeQueryOrMutation(operationsDoc , "AddUser");
+    var data = await executeQueryOrMutation(operationsDoc , "AddUser");
+    return data;
 }
 
 /* GET ALL USERS(ONLY FOR ADMINS) */
-function GetUsers(){
+async function GetUsers(){
     const operationsDoc = `
     query GetAllUsers {
       queryUser(order: {asc: username}) {
@@ -89,8 +96,8 @@ function GetUsers(){
       }
     }
   `;
-  executeQueryOrMutation(operationsDoc , "GetAllUsers");
-  
+  const data = await executeQueryOrMutation(operationsDoc , "GetAllUsers");
+  console.log(data);
 }
 
 /* GET USER WITH USER_ID FOR EXACT DETAILS */
@@ -508,10 +515,10 @@ function RemoveBestFriend(my_user_id , friend_user_id){
 }
 
 // AddUser("004" , "shashank2307" , "Shashank Arora" , "shashank2307@gmail.com" , "pic_shashank");
-// GetUsers();
+GetUsers();
 // GetUserWithUsername("shashank2409");
 // GetUsersWithName("Shashank");
-GetUsersWithName("sha");
+// GetUsersWithName("sha");
 // AddFriend("b" , "h");
 // AddBestFriend("a" , "c");
 // SendBestFriendRequest("002" , "003");
