@@ -127,7 +127,7 @@ const GetUserWithUsername = async function (username){
 }
 
 /* GET ALL USERS WITH NAME */
-const searchUserWithName = async function(name){
+const SearchUserWithName = async function(name){
     const operationsDoc = `
     query GetUsersWithName {
         queryUser(filter: {name: {regexp: "/.*` + name + `.*/"}}) {
@@ -529,7 +529,7 @@ module.exports = {
   "getUsers" : GetUsers,
   "getUserWithUserId" : GetUserWithUserId,
   "GetUserWithUsername" : GetUserWithUsername,
-  "searchUserWithName" : searchUserWithName,
+  "searchUserWithName" : SearchUserWithName,
   "getMyFriends" : GetMyFriends,
   "getMyBestFriends" : GetMyBestFriends,
   "getMyReceivedRequests" : GetMyReceivedRequests,
