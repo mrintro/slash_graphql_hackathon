@@ -209,6 +209,10 @@ const RemoveBestFriend = async function (my_user_id , friend_user_id){
     
 }
 
+const AddTask = async function (task , username , name , email , type ){
+    return database_queries.AddTask(task , username , name , email , type);
+}
+
 module.exports = {
     "addUser" : AddUser,
     "getUsers" : GetUsers,
