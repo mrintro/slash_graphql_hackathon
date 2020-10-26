@@ -1,48 +1,53 @@
 const fetch = require('node-fetch');
 
 
-function fetchGraphQL(operationsDoc, operationName, variables) {
-  console.log("replying to query")
-    return fetch(
-        "http://localhost:8080/graphql",
-        {
+
+
+
+
+async function fetchGraphQL(operationsDoc, operationName, variables) {
+    const result = await fetch(
+      "http://localhost:8080/graphql",
+      {
         method: "POST",
         headers: {
-            "Content-Type": "application/json"
+          "Content-Type": "application/json"
         },
         body: JSON.stringify({
-            query: operationsDoc,
-            variables: variables,
-            operationName: operationName
+          query: operationsDoc,
+          variables: variables,
+          operationName: operationName
         })
-        }
-    ).then((result) => result.json());
-}
+      }
+    );
+    return await result.json();
+  }
 
-function executeQueryOrMutation(operationsDoc , operationName){
-      function fetchMyQuery() {
-        return fetchGraphQL(
-            operationsDoc,
-            operationName,
-            {}
-        );
-        }
-    
-        return fetchMyQuery()
-        .then(({ data, errors }) => {
-            if (errors) {
-            console.error(errors);
-            }
-            // console.log(data["queryUser"]);
-        })
-        .catch((error) => {
-            console.error(error);
-        });
-}
+  
+  function fetchGetAllUsers(operationsDoc , operationName) {
+    return fetchGraphQL(
+      operationsDoc,
+      operationName,
+      {}
+    );
+  }
+  
+  async function executeQueryOrMutation(operationsDoc , operationName) {
+    const { errors, data } = await fetchGetAllUsers(operationsDoc , operationName);
+  
+    if (errors) {
+      // handle those errors like a pro
+      console.error(errors);
+      return errors;
+    }
+    // console.log("executing");
+    // console.log(data);
+    return await data;
+  }
 
 /* ADD A USER */
-const AddUser = function (id , username , name , email , profile_picture){
-    const operationsDoc = `
+const AddUser = async function (id , username , name , email , profile_picture){
+   const operationsDoc = `
     mutation AddUser {
         addUser(input: [
             {
@@ -64,7 +69,8 @@ const AddUser = function (id , username , name , email , profile_picture){
     }
     `;
     console.log(operationsDoc);
-    executeQueryOrMutation(operationsDoc , "AddUser");
+    var data = await executeQueryOrMutation(operationsDoc , "AddUser");
+    return data;
 }
 
 /* GET ALL USERS(ONLY FOR ADMINS) */
@@ -89,10 +95,8 @@ const GetUsers = async function(){
       }
     }
   `;
-  console.log("getting response");
-  let response = executeQueryOrMutation(operationsDoc , "GetAllUsers");
-  console.log("rec res",response);
-  return response;
+  const data = await executeQueryOrMutation(operationsDoc , "GetAllUsers");
+  console.log(data);
 }
 
 /* GET USER WITH USER_ID FOR EXACT DETAILS */
@@ -114,6 +118,7 @@ function GetUserWithUsername(username){
     const operationsDoc = `
     query GetUserWithUsername {
         queryUser(filter: {username: {eq: "` + username + `"}}) {
+          user_id
           name
           username
           email
@@ -130,10 +135,11 @@ const searchUserWithName = function(name){
     const operationsDoc = `
     query GetUsersWithName {
         queryUser(filter: {name: {regexp: "/.*` + name + `.*/"}}) {
-        name
-        username
-        email
-        profile_picture
+            user_id
+            name
+            username
+            email
+            profile_picture
         }
     }
     `;
@@ -510,8 +516,8 @@ function RemoveBestFriend(my_user_id , friend_user_id){
     executeQueryOrMutation(operationsDoc , "RemoveBestFriend");
 }
 
-// AddUser("003" , "ria0412" , "Ria Jain" , "ria0412@gmail.com" , "pic_ria");
-// GetUsers();
+// AddUser("004" , "shashank2307" , "Shashank Arora" , "shashank2307@gmail.com" , "pic_shashank");
+GetUsers();
 // GetUserWithUsername("shashank2409");
 // searchUserWithName("Aniket");
 // GetUsersWithName("sha");
