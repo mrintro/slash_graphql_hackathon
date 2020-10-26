@@ -100,13 +100,29 @@ const GetUserWithUserId = async function (user_id){
     const operationsDoc = `query GetUserWithUserId{
         getUser(user_id: "` + user_id + `"){
           user_id
-          username
-          name
-          profile_picture
+          friends{
+              user_id
+          }
+          best_friends{
+              user_id
+          }
+          sent_requests{
+              user_id
+          }
+          received_requests{
+              user_id
+          }
+          sent_best_friend_requests{
+              user_id
+          }
+          received_best_friend_requests{
+              user_id
+          }
         }
       }
     `;
     const response = await executeQueryOrMutation(operationsDoc , "GetUserWithUserId");
+    // console.log(response);
     return response;
 }
 

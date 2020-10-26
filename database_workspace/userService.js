@@ -1,4 +1,4 @@
-const database_queries = require ("index.js");
+const database_queries = require ("./index.js");
 
 /* ADD A USER */
 const AddUser = async function (id , username , name , email , profile_picture){
@@ -11,18 +11,19 @@ const GetUsers = async function(){
 }
 
 /* GET USER WITH USER_ID FOR EXACT DETAILS */
-const GetUserWithUserId = async function (user_id){
+const GetUserWithUserId = async function (my_user_id , user_id){
     return database_queries.getUserWithUserId(user_id);
 }
 
 /* GET A USER WITH USERNAME */
-const GetUserWithUsername = async function (username){
+const GetUserWithUsername = async function (my_user_id , username){
     return database_queries.GetUserWithUsername(username);
 }
 
 /* GET ALL USERS WITH NAME */
-const SearchUserWithName = async function(name){
-    return database_queries.searchUserWithName(name);
+const SearchUserWithName = async function(my_user_id , name){
+    const data = await database_queries.searchUserWithName(name);
+    console.log("data -> " , data);
 }
 
 /* VIEW MY FRIENDS */
@@ -47,6 +48,9 @@ const GetMySentRequests = async function (user_id){
 
 /* SEND FRIEND REQUEST */
 const SendFriendRequest = async function (my_user_id , friend_user_id){
+    var user_data = await database_queries.getUserWithUserId(my_user_id);
+    user_data = user_data.getUser;
+    console.log("user -> " , user_data);
     
 }
 
@@ -104,3 +108,5 @@ module.exports = {
     "removeFriend" : RemoveFriend,
     "removeBestFriend" :  RemoveBestFriend
 }
+
+SendFriendRequest("001");
