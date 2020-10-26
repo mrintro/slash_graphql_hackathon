@@ -37,7 +37,7 @@ async function fetchGraphQL(operationsDoc, operationName, variables) {
       return errors;
     }
     // console.log("executing");
-    console.log(data);
+    // console.log(data);
     return await data;
   }
 
@@ -74,16 +74,19 @@ const GetUsers = async function(){
     const operationsDoc = `
     query GetAllUsers {
       queryUser(order: {asc: username}) {
+        user_id
         username
         name
         email
         profile_picture
         friends {
+          user_id
           username
           name
           profile_picture
         }
         best_friends{
+            user_id
             username
             name
             profile_picture
@@ -92,7 +95,8 @@ const GetUsers = async function(){
     }
   `;
   const data = await executeQueryOrMutation(operationsDoc , "GetAllUsers");
-  console.log(data);
+//   console.log(data);
+    return data;
 }
 
 /* GET USER WITH USER_ID FOR EXACT DETAILS */
@@ -264,6 +268,10 @@ const SendFriendRequest = async function (my_user_id , friend_user_id){
     return response;
 }
 
+const CancelFriendRequest = async function(user_id , friend_user_id){
+
+}
+
 /* SEND BEST FRIEND REQUEST */
 const SendBestFriendRequest = async function (my_user_id , friend_user_id){
     const operationsDoc = `mutation SendBestFriendRequest{
@@ -296,6 +304,10 @@ const SendBestFriendRequest = async function (my_user_id , friend_user_id){
     `;
     const response = await executeQueryOrMutation(operationsDoc , "SendBestFriendRequest");
     return response;
+}
+
+const CancelBestFriendRequest = async function(user_id , friend_user_id){
+    
 }
 
 const AcceptFriendRequest = async function (my_user_id , friend_user_id){
@@ -545,14 +557,16 @@ module.exports = {
   "addUser" : AddUser,
   "getUsers" : GetUsers,
   "getUserWithUserId" : GetUserWithUserId,
-  "GetUserWithUsername" : GetUserWithUsername,
+  "getUserWithUsername" : GetUserWithUsername,
   "searchUserWithName" : SearchUserWithName,
   "getMyFriends" : GetMyFriends,
   "getMyBestFriends" : GetMyBestFriends,
   "getMyReceivedRequests" : GetMyReceivedRequests,
   "getMySentRequests" : GetMySentRequests,
   "sendFriendRequest" : SendFriendRequest,
+  "cancelFriendRequest" : CancelFriendRequest,
   "sendBestFriendRequest" : SendBestFriendRequest,
+  "cancelBestFriendRequest" : CancelFriendRequest,
   "acceptFriendRequest" : AcceptFriendRequest,
   "declineFriendRequest" : DeclineFriendRequest,
   "acceptBestFriendRequest" : AcceptBestFriendRequest,
