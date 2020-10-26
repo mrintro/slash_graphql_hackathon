@@ -1,8 +1,7 @@
+const { sendFriendRequest, cancelBestFriendRequest } = require("./index.js");
 const database_queries = require ("./index.js");
 
 const checkRelation = async function(relation , user_data , user2_id){
-    // console.log(relation);
-    // console.log(user_data["friends"]);
     for(var i = 0; i < user_data[relation].length; i++){
         if(user_data[relation][i]["user_id"] == user2_id){
             return 1;
@@ -93,7 +92,7 @@ const addRelationButtons = async function(all_users , user_data){
 
 /* ADD A USER */
 const AddUser = async function (id , username , name , email , profile_picture){
-    return database_queries.AddUser(id , username , name , email , profile_picture);
+    return await database_queries.AddUser(id , username , name , email , profile_picture);
 }
  
  /* GET ALL USERS(ONLY FOR ADMINS) */
@@ -150,63 +149,72 @@ const SearchUserWithName = async function(my_user_id , name){
 
 /* VIEW MY FRIENDS */
 const GetMyFriends = async function (user_id){
-    return database_queries.GetMyFriends(user_id);
+    return await database_queries.getMyFriends(user_id);
 }
 
 /* VIEW MY BEST FRIENDS */
 const GetMyBestFriends = async function (user_id){
-    return database_queries.GetMyBestFriends(user_id);
+    return await database_queries.getMyBestFriends(user_id);
 }
 
 /* VIEW MY RECEIVED REQUESTS */
 const GetMyReceivedRequests = async function (user_id){
-    return database_queries.getMyReceivedRequests(user_id);
+    return await database_queries.getMyReceivedRequests(user_id);
 }
 
 /* VIEW MY SENT REQUESTS */
 const GetMySentRequests = async function (user_id){
-    return database_queries.getMySentRequests(user_id);
+    return await database_queries.getMySentRequests(user_id);
 }
 
 /* SEND FRIEND REQUEST */
 const SendFriendRequest = async function (my_user_id , friend_user_id){
-    
+    return await database_queries.sendFriendRequest(my_user_id , friend_user_id);
+}
 
+/* CANCEL FRIEND REQUEST */
+const CancelFriendRequest = async function(my_user_id , friend_user_id){
+    return await database_queries.cancelFriendRequest(my_user_id , friend_user_id);
 }
 
 /* SEND BEST FRIEND REQUEST */
 const SendBestFriendRequest = async function (my_user_id , friend_user_id){
-    
+    return await database_queries.sendBestFriendRequest(my_user_id , friend_user_id);
+}
+
+/* CANCEL BEST FRIEND REQUEST */
+const CancelBestFriendRequest = async function(my_user_id , friend_user_id){
+    return await database_queries.cancelBestFriendRequest(my_user_id , friend_user_id);
 }
 
 /* ACCEPT AN INCOMING FRIEND REQUEST */
 const AcceptFriendRequest = async function (my_user_id , friend_user_id){
-    database_queries.acceptFriendRequest(my_user_id , friend_user_id);
+    return await database_queries.acceptFriendRequest(my_user_id , friend_user_id);
 }
 
 /* DECLINE AN INCOMING FRIEND REQUEST */
 const DeclineFriendRequest = async function (my_user_id , friend_user_id){
-    
+    return await database_queries.declineFriendRequest(my_user_id , friend_user_id);
 }
 
 /* ACCEPT AN INCOMING BEST FRIEND REQUEST */
 const AcceptBestFriendRequest = async function (my_user_id , friend_user_id){
-    database_queries.acceptBestFriendRequest(my_user_id , friend_user_id);
+    return await database_queries.acceptBestFriendRequest(my_user_id , friend_user_id);
 }
 
 /* DECLINE AN INCOMING BEST FRIEND REQUEST */
 const DeclineBestFriendRequest = async function (my_user_id , friend_user_id){
-    
+    return await database_queries.declineBestFriendRequest(my_user_id , friend_user_id);
 }
 
 /* REMOVE A FRIEND FROM YOUR FRIEND LIST */
 const RemoveFriend = async function (my_user_id , friend_user_id){
-    
+    return await database_queries.removeFriend(my_user_id , friend_user_id);
 }
 
 /* REMOVE A FRIEND FROM YOUR BEST FRIEND LIST */
 const RemoveBestFriend = async function (my_user_id , friend_user_id){
-    
+    return await database_queries.removeBestFriend(my_user_id , friend_user_id);
 }
 
 module.exports = {
@@ -220,18 +228,29 @@ module.exports = {
     "getMyReceivedRequests" : GetMyReceivedRequests,
     "getMySentRequests" : GetMySentRequests,
     "sendFriendRequest" : SendFriendRequest,
+    "cancelFriendRequest" : CancelFriendRequest,
     "sendBestFriendRequest" : SendBestFriendRequest,
+    "cancelBestFriendRequest" : CancelBestFriendRequest,
     "acceptFriendRequest" : AcceptFriendRequest,
     "declineFriendRequest" : DeclineFriendRequest,
     "acceptBestFriendRequest" : AcceptBestFriendRequest,
     "declineBestFriendRequest" : DeclineBestFriendRequest,
     "removeFriend" : RemoveFriend,
     "removeBestFriend" :  RemoveBestFriend
-}
+  }
 
-// GetUsers("001");
+// GetUsers("003");
 // SearchUserWithName("003" , "Shashank");
 // GetUserWithUserId("003" , "001");
 // GetUserWithUsername("001" , "ria0412");
 // AcceptBestFriendRequest("001" , "003");
 // AcceptFriendRequest("002" , "001");
+// RemoveBestFriend("001" , "003");
+// RemoveFriend("001" , "003");
+// RemoveBestFriend("001" , "002");
+// RemoveFriend("001" , "002");
+// RemoveBestFriend("002" , "003");
+// RemoveFriend("002" , "003");
+// SendBestFriendRequest("001" , "003");
+// cancelBestFriendRequest("001" , "003");
+// CancelFriendRequest("001" , "003");
