@@ -2,9 +2,9 @@
   "name": "database_workspace",
   "version": "1.0.0",
   "description": "",
-  "main": "userService.js",
+  "main": "taskDAO.js",
   "scripts": {
-    "start": "node userService.js",
+    "start": "node taskDAO.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",

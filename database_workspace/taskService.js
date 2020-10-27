@@ -16,16 +16,16 @@ const GetMyClosedTasks = async function(user_id){
     return await task_queries.getMyClosedTasks(user_id);
 }
 
-const GetFriendsActiveTasks = async function(){
-
+const GetFriendsActiveTasks = async function(user_id){
+return await task_queries.getFriendsActiveTasks(user_id);
 }
 
-const GetTasksUsingUserId = async function(){
-
+const GetTasksUsingUserId = async function(user_id){
+    return await task_queries.getTasksUsingUserId(user_id);
 }
 
-const RemoveTask = async function(){
-
+const RemoveTask = async function(task_id){
+    return await task_queries.removeTask(task_id);
 }
 
 const UpdateTask = async function(){
