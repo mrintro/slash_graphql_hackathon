@@ -78,6 +78,34 @@ const AddTask = async function (title , description , deadline , user_id){
 const GetMyTasks = async function (user_id){
     const operationsDoc = `
     query GetMyTasks {
+        getUser(user_id:"002") {
+            active_tasks{
+              title
+              description
+              deadline
+              volunteered_by{
+                username
+              }
+            }
+           closed_tasks{
+            title
+            description
+            deadline
+            alloted_to{
+              username
+            }
+          }
+        }
+      }
+     `;
+     console.log(operationsDoc);
+     var data = await executeQueryOrMutation(operationsDoc , "GetMyTasks");
+     return data;
+ }
+
+ const GetMyActiveTasks = async function (user_id){
+    const operationsDoc = `
+    query GetMyActiveTasks {
         getUser(user_id:"`+ user_id + `") {
             active_tasks{
               title
@@ -91,6 +119,6 @@ const GetMyTasks = async function (user_id){
       }
      `;
      console.log(operationsDoc);
-     var data = await executeQueryOrMutation(operationsDoc , "GetMyTask");
+     var data = await executeQueryOrMutation(operationsDoc , "GetMyActiveTasks");
      return data;
  }
