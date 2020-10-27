@@ -214,24 +214,98 @@ const GetMyTasks = async function (user_id){
     if(title != ""){
         operationsDoc = operationsDoc + `title : "` + title + `"`;
     }
-    else if(description != )
-    operationsDoc = operationsDoc + `}
-        }){
-            task{
-                title
-                description
-                deadline
-                alloted_to{
-                username
-                }
-            }
-        }
-        }`;
+    else if(description != ""){
+      operationsDoc = operationsDoc + `}
+          }){
+              task{
+                  title
+                  description
+                  deadline
+                  alloted_to{
+                  username
+                  }
+              }
+          }
+          }`;
+    }
        
      console.log(operationsDoc);
      var data = await executeQueryOrMutation(operationsDoc , "UpdateTask");
      return data;
  }
+
+ const VolunteerTask = async function(task_id , user_id){
+    const operationsDoc = `mutation Volunteer{
+      updateTask(input: {
+        filter: {
+          task_id: [
+            "` + task_id + `"
+          ]
+        },
+        set:{ 
+          volunteered_by:[
+            {user_id: "` + user_id +`"}
+          ]
+        }
+      }){
+        task{
+          volunteered_by{
+            user_id
+          }
+        }
+      }
+    }`;
+ }
+
+ const BackoutFromTask = async function(task_id , user_id){
+    const operationsDoc = `mutation Volunteer{
+      updateTask(input: {
+        filter: {
+          task_id: [
+            "` + task_id + `"
+          ]
+        },
+        remove: {
+          volunteered_by: [
+            {user_id: "` + user_id + `"}
+          ]
+        }
+      }){
+        task{
+          volunteered_by{
+            user_id
+          }
+        }
+      }
+    }`;
+    var data = await executeQueryOrMutation(operationsDoc , "BackoutFromTask");
+     return data;
+}
+
+ const ViewVolunteeredTasks = async function(user_id){
+    const operationsDoc = `query ViewVolunteeredTasks{
+      getUser(user_id: "` + user_id +`"){
+        volunteered_tasks{
+          task_id
+          title
+          description
+          volunteered_by{
+            username
+            name
+          }
+          alloted_to{
+            username
+            name
+          }
+          status
+        }
+      }
+    }
+    `;   
+    var data = await executeQueryOrMutation(operationsDoc , "ViewVolunteeredTasks");
+     return data;
+}
+
 GetMyTasks("002");
 module.exports = {
   "addTask" : AddTask,

@@ -56,6 +56,6 @@ const BackoutFromTask = async function(){
 
 }
 
-const ViewVolunteeredTasks = async function(){
-
+const ViewVolunteeredTasks = async function(user_id){
+    
 }
