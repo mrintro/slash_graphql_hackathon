@@ -142,3 +142,10 @@ const GetMyTasks = async function (user_id){
      var data = await executeQueryOrMutation(operationsDoc , "GetMyClosedTasks");
      return data;
  }
+
+ module.exports = {
+  "addTask" : AddTask,
+  "getMyTasks" : GetMyTasks,
+  "getMyActiveTasks" : GetMyActiveTasks,
+  "getMyClosedTasks" : GetMyClosedTasks
+ };
