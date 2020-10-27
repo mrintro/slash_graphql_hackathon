@@ -80,12 +80,14 @@ const GetMyTasks = async function (user_id){
     query GetMyTasks {
         getUser(user_id:"`+ user_id + `") {
             active_tasks{
+              task_id
               title
               description
               deadline
               volunteered_by{
                 username
               }
+              status
             }
            closed_tasks{
             title
@@ -100,6 +102,7 @@ const GetMyTasks = async function (user_id){
      `;
      console.log(operationsDoc);
      var data = await executeQueryOrMutation(operationsDoc , "GetMyTasks");
+     console.log(data.getUser);
      return data;
  }
 
@@ -198,8 +201,8 @@ const GetMyTasks = async function (user_id){
      return data;
  }
 
- const UpdateTask = async function (task_id , title , description , deadline , alloted_to){
-    const operationsDoc = `
+ const UpdateTask = async function (task_id , title , description , deadline){
+    var operationsDoc = `
     mutation UpdateTask {
         updateTask(input: 
           {
@@ -211,10 +214,34 @@ const GetMyTasks = async function (user_id){
               ]               
             }, 
             set:{`;
+    var count = 0;
+    if(title != "")
+    count++;
+    if(description != "")
+    count++;
+    if(deadline != "")
+    count++;
     if(title != ""){
         operationsDoc = operationsDoc + `title : "` + title + `"`;
+        count--;
+        if(count!=0){
+            operationsDoc = operationsDoc + `,`;
+        }
     }
-    else if(description != )
+    if(description != ""){
+        operationsDoc = operationsDoc + `description : "` + description + `"`;
+        count--;
+        if(count!=0){
+            operationsDoc = operationsDoc + `,`;
+        }
+    }
+    if(deadline != ""){
+        operationsDoc = operationsDoc + `deadline : "` + deadline + `"`;
+        count--;
+        if(count!=0){
+            operationsDoc = operationsDoc + `,`;
+        }
+    }
     operationsDoc = operationsDoc + `}
         }){
             task{
@@ -232,6 +259,89 @@ const GetMyTasks = async function (user_id){
      var data = await executeQueryOrMutation(operationsDoc , "UpdateTask");
      return data;
  }
+
+ const UpdateTaskStatus = async function (task_id , TaskStatus){
+    var operationsDoc = `
+    mutation UpdateTaskStatus {
+        updateTask(input: 
+          {
+            filter: 
+            {
+              task_id: 
+              [ 
+                "` + task_id + `"
+              ]               
+            }, 
+            set:{
+                status : ` + TaskStatus + `
+            }
+        }){
+            task{
+                title
+                description
+                deadline
+                alloted_to{
+                  username
+                }
+                status
+            }
+        }
+        }`;
+       
+     console.log(operationsDoc);
+     var data = await executeQueryOrMutation(operationsDoc , "UpdateTaskStatus");
+     return data;
+ }
+
+ const ViewTaskStatusUsingTaskId = async function (task_id){
+    var operationsDoc = `query ViewTaskStatusUsingTaskId{
+        getTask(task_id: "` + task_id + `"){
+          status
+        }
+      }
+    `;
+       
+     console.log(operationsDoc);
+     var data = await executeQueryOrMutation(operationsDoc , "UpdateTaskStatus");
+     return data;
+ }
+
+ const AssignTask = async function (task_id , alloted_user_id){
+    var operationsDoc = `mutation AssignTask{
+        updateUser(input: {
+            filter: {
+              user_id: {
+                eq: "` + alloted_user_id + `"
+              }
+            }
+            set: {
+              assigned_tasks: [
+                {
+                  task_id: "` + task_id + `"
+                }
+              ]
+            }
+          }){
+            user{
+              user_id
+              username
+              name
+              assigned_tasks{
+                task_id
+                title
+                description
+              }
+            }
+          }
+      }
+    `;
+       
+     console.log(operationsDoc);
+     var data = await executeQueryOrMutation(operationsDoc , "UpdateTaskStatus");
+     return data;
+ }
+GetMyTasks("002");
+UpdateTaskStatus("0x5","assigned");
 GetMyTasks("002");
 module.exports = {
   "addTask" : AddTask,
