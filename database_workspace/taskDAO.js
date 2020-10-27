@@ -261,7 +261,7 @@ const GetMyTasks = async function (user_id){
  }
 
  const VolunteerTask = async function(task_id , user_id){
-    const operationsDoc = `mutation Volunteer{
+    const operationsDoc = `mutation VolunteerTask{
       updateTask(input: {
         filter: {
           task_id: [
@@ -281,10 +281,12 @@ const GetMyTasks = async function (user_id){
         }
       }
     }`;
+    var data = await executeQueryOrMutation(operationsDoc , "VolunteerTask");
+     return data;
  }
 
  const BackoutFromTask = async function(task_id , user_id){
-    const operationsDoc = `mutation Volunteer{
+    const operationsDoc = `mutation BackoutFromTask{
       updateTask(input: {
         filter: {
           task_id: [
