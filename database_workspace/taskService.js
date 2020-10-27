@@ -28,34 +28,51 @@ const RemoveTask = async function(task_id){
     return await task_queries.removeTask(task_id);
 }
 
-const UpdateTask = async function(){
-
+const UpdateTask = async function(task_id , title , description , deadline){
+    return await task_queries.updateTask(task_id , title , description , deadline);
 }
 
-const UpdateTaskStatus = async function(){
-
+const UpdateTaskStatus = async function(task_id , task_status){
+    return await task_queries.UpdateTaskStatus(task_id , task_status);
 }
 
-const ViewTaskStatusUsingTaskId = async function(){
-
+const ViewTaskStatusUsingTaskId = async function(task_id){
+    return await task_queries.viewTaskStatusUsingTaskId(task_id);
 }
 
-const AssignTask = async function(){
-
+const AssignTask = async function(task_id , alloted_user_id){
+    return await task_queries.assignTask(task_id , alloted_user_id);
 }
 
 const ViewAssignedTasks = async function(){
-
+    // return await task_queries.viewAssignedTasks()
 }
 
-const VolunteerTask = async function(){
-
+const VolunteerTask = async function(task_id , user_id){
+    return await task_queries.volunteerTask(task_id , user_id);
 }
 
 const BackoutFromTask = async function(){
-
+    return await task_queries.backoutFromTask(task_id , user_id);
 }
 
 const ViewVolunteeredTasks = async function(user_id){
-    
+    return await task_queries.viewVolunteeredTasks(user_id);
 }
+
+module.exports = {
+    "addTask" : AddTask,
+    "getMyTasks" : GetMyTasks,
+    "getMyActiveTasks" : GetMyActiveTasks,
+    "getMyClosedTasks" : GetMyClosedTasks,
+    "getFriendsActiveTasks" : GetFriendsActiveTasks,
+    "getTasksUsingUserId" : GetTasksUsingUserId,
+    "removeTask" : RemoveTask,
+    "assignTask" : AssignTask,
+    "viewTaskStatusUsingTaskId" : ViewTaskStatusUsingTaskId,
+    "viewVolunteeredTasks" : ViewVolunteeredTasks,
+    "backoutFromTask" :  BackoutFromTask,
+    "volunteerTask" :  VolunteerTask,
+    "updateTask" :  UpdateTask,
+    "viewAssignedTasks" : ViewAssignedTasks
+};

@@ -430,5 +430,5 @@ module.exports = {
   "backoutFromTask" :  BackoutFromTask,
   "volunteerTask" :  VolunteerTask,
   "updateTask" :  UpdateTask,
-
+  "viewAssignedTasks" : ViewAssignedTasks
  };
