@@ -78,7 +78,7 @@ const AddTask = async function (title , description , deadline , user_id){
 const GetMyTasks = async function (user_id){
     const operationsDoc = `
     query GetMyTasks {
-        getUser(user_id:"002") {
+        getUser(user_id:"`+ user_id + `") {
             active_tasks{
               title
               description
@@ -120,5 +120,25 @@ const GetMyTasks = async function (user_id){
      `;
      console.log(operationsDoc);
      var data = await executeQueryOrMutation(operationsDoc , "GetMyActiveTasks");
+     return data;
+ }
+
+ const GetMyClosedTasks = async function (user_id){
+    const operationsDoc = `
+    query GetMyClosedTasks {
+        getUser(user_id:"`+ user_id + `") {
+            closed_tasks{
+              title
+              description
+              deadline
+              alloted_to{
+                username
+              }
+            }
+        }
+      }
+     `;
+     console.log(operationsDoc);
+     var data = await executeQueryOrMutation(operationsDoc , "GetMyClosedTasks");
      return data;
  }
