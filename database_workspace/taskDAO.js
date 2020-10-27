@@ -1,4 +1,5 @@
 const fetch = require('node-fetch');
+const { getUserWithUserId } = require('.');
 const database_url = "http://localhost:8080/graphql";
 
 async function fetchGraphQL(operationsDoc, operationName, variables) {
@@ -43,29 +44,53 @@ async function fetchGraphQL(operationsDoc, operationName, variables) {
 
 
 /* ADD TASK */
-const AddTask = async function (id , username , name , email , task){
+const AddTask = async function (title , description , deadline , user_id){
     const operationsDoc = `
-     mutation AddTask {
-         addTask(input: [
-             {
-                 user_id: "` + id + `",
-                 username:"` + username + `", 
-                 name: "` + name + `" ,
-                 email: "` + email + `" ,
-                 profile_picture: "` + profile_picture + `"
-             }]) {
-         user {
-             username
-             name
-             friends {
-                 username
-                 name
-             }
-         }
-         }
-     }
+    mutation AddTask{
+        addTask(input:[
+          {
+            title : "` + title + `",
+            description : "` + description + `",
+            deadline : "` + deadline + `",
+            posted_by : {
+                user_id: "` + user_id + `", 
+            },
+            status : uploaded
+          }
+        ]){
+          task{
+            task_id
+            title
+            description
+            posted_by{
+                  user_id
+            }
+          }
+        }
+      }
      `;
      console.log(operationsDoc);
-     var data = await executeQueryOrMutation(operationsDoc , "AddUser");
+     var data = await executeQueryOrMutation(operationsDoc , "AddTask");
+     return data;
+ }
+
+/* GET MY TASKS */
+const GetMyTasks = async function (user_id){
+    const operationsDoc = `
+    query GetMyTasks {
+        getUser(user_id:"`+ user_id + `") {
+            active_tasks{
+              title
+              description
+              deadline
+              volunteered_by{
+                username
+              }
+            }
+        }
+      }
+     `;
+     console.log(operationsDoc);
+     var data = await executeQueryOrMutation(operationsDoc , "GetMyTask");
      return data;
  }
