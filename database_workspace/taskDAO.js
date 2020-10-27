@@ -143,6 +143,7 @@ const GetMyTasks = async function (user_id){
      return data;
  }
 
+ 
  const GetFriendsActiveTasks = async function (user_id){
     const operationsDoc = `
     query GetFriendsActiveTasks {
@@ -178,7 +179,7 @@ const GetMyTasks = async function (user_id){
      console.log(operationsDoc);
      var data = await executeQueryOrMutation(operationsDoc , "GetTasksUsingUserId");
      return data;
- }
+ } 
 
  const RemoveTask = async function (task_id){
     const operationsDoc = `
@@ -231,3 +232,13 @@ const GetMyTasks = async function (user_id){
      var data = await executeQueryOrMutation(operationsDoc , "UpdateTask");
      return data;
  }
+GetMyTasks("002");
+module.exports = {
+  "addTask" : AddTask,
+  "getMyTasks" : GetMyTasks,
+  "getMyActiveTasks" : GetMyActiveTasks,
+  "getMyClosedTasks" : GetMyClosedTasks,
+  "getFriendsActiveTasks" : GetFriendsActiveTasks,
+  "getTasksUsingUserId" : GetTasksUsingUserId,
+  "removeTask" : RemoveTask
+ };
