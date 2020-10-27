@@ -142,3 +142,59 @@ const GetMyTasks = async function (user_id){
      var data = await executeQueryOrMutation(operationsDoc , "GetMyClosedTasks");
      return data;
  }
+
+ const GetFriendsActiveTasks = async function (user_id){
+    const operationsDoc = `
+    query GetFriendsActiveTasks {
+        getUser(user_id:"`+ user_id + `") {
+            friends{
+                username
+                active_tasks{
+                  title
+                  description
+                  deadline
+                }
+            }
+        }
+      }
+     `;
+     console.log(operationsDoc);
+     var data = await executeQueryOrMutation(operationsDoc , "GetFriendsActiveTasks");
+     return data;
+ }
+
+ const GetTasksUsingUserId = async function (user_id){
+    const operationsDoc = `
+    query GetTasksUsingUserId {
+        getUser(user_id:"`+ user_id + `") {
+            active_tasks{
+                title
+                description
+                deadline
+            }
+        }
+      }
+     `;
+     console.log(operationsDoc);
+     var data = await executeQueryOrMutation(operationsDoc , "GetTasksUsingUserId");
+     return data;
+ }
+
+ const RemoveTask = async function (task_id){
+    const operationsDoc = `
+    mutation RemoveTask{
+        deleteTask (filter: {
+          task_id:[
+            "` + task_id + `"
+          ]
+        }){
+          msg
+        }
+      }
+     `;
+     console.log(operationsDoc);
+     var data = await executeQueryOrMutation(operationsDoc , "RemoveTask");
+     return data;
+ }
+
+GetMyTasks("002");
