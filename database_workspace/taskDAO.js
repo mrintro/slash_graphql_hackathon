@@ -374,7 +374,7 @@ const GetMyTasks = async function (user_id){
     `;
        
      console.log(operationsDoc);
-     var data = await executeQueryOrMutation(operationsDoc , "UpdateTaskStatus");
+     var data = await executeQueryOrMutation(operationsDoc , "ViewTaskStatusUsingTaskId");
      return data;
  }
 
@@ -409,7 +409,23 @@ const GetMyTasks = async function (user_id){
     `;
        
      console.log(operationsDoc);
-     var data = await executeQueryOrMutation(operationsDoc , "UpdateTaskStatus");
+     var data = await executeQueryOrMutation(operationsDoc , "AssignTask");
+     return data;
+ }
+
+ const ViewAssignedTasks = async function (user_id){
+    var operationsDoc = `query ViewAssignedTasks{
+        getUser(user_id: "` + user_id + `"){
+            assigned_tasks{
+                title
+                description
+                deadline
+              }
+        }
+      }
+    `;
+     console.log(operationsDoc);
+     var data = await executeQueryOrMutation(operationsDoc , "ViewAssignedTasks");
      return data;
  }
 GetMyTasks("002");
