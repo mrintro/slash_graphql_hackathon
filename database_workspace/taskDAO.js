@@ -197,4 +197,37 @@ const GetMyTasks = async function (user_id){
      return data;
  }
 
-GetMyTasks("002");
+ const UpdateTask = async function (task_id , title , description , deadline , alloted_to){
+    const operationsDoc = `
+    mutation UpdateTask {
+        updateTask(input: 
+          {
+            filter: 
+            {
+              task_id: 
+              [ 
+                "` + task_id + `"
+              ]               
+            }, 
+            set:{`;
+    if(title != ""){
+        operationsDoc = operationsDoc + `title : "` + title + `"`;
+    }
+    else if(description != )
+    operationsDoc = operationsDoc + `}
+        }){
+            task{
+                title
+                description
+                deadline
+                alloted_to{
+                username
+                }
+            }
+        }
+        }`;
+       
+     console.log(operationsDoc);
+     var data = await executeQueryOrMutation(operationsDoc , "UpdateTask");
+     return data;
+ }
