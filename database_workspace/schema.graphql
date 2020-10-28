@@ -22,6 +22,7 @@ type Task {
     task_id: ID!
     title: String! @search(by: [hash , regexp])
     description: String! 
+    # deadline: DateTime!
     deadline: String!
     posted_by: User! @hasInverse(field: active_tasks)
     volunteered_by: [User] @hasInverse(field: volunteered_tasks)

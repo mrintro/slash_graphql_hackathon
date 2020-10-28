@@ -269,7 +269,42 @@ const SendFriendRequest = async function (my_user_id , friend_user_id){
 }
 
 const CancelFriendRequest = async function(user_id , friend_user_id){
-
+    const operationsDoc = `mutation CancelFriendRequest{
+        updateUser(input: {
+          filter: {
+            user_id: {
+              eq: "` + user_id + `"
+            }
+          },
+          remove: {
+            sent_requests: [
+              {
+                user_id: "` + friend_user_id + `"
+              }
+            ]
+          }
+        }){
+          user{
+            name
+            username
+            friends{
+              name
+              username
+            }
+            best_friends{
+              name
+              username
+            }
+            sent_best_friend_requests{
+              name
+              username
+            }
+          }
+        }
+      }
+    `;
+    const response = await executeQueryOrMutation(operationsDoc , "CancelFriendRequest");
+    return response;
 }
 
 /* SEND BEST FRIEND REQUEST */
@@ -307,7 +342,42 @@ const SendBestFriendRequest = async function (my_user_id , friend_user_id){
 }
 
 const CancelBestFriendRequest = async function(user_id , friend_user_id){
-    
+    const operationsDoc = `mutation CancelBestFriendRequest{
+        updateUser(input: {
+          filter: {
+            user_id: {
+              eq: "` + user_id + `"
+            }
+          },
+          remove: {
+            sent_best_friend_requests: [
+              {
+                user_id: "` + friend_user_id + `"
+              }
+            ]
+          }
+        }){
+          user{
+            name
+            username
+            friends{
+              name
+              username
+            }
+            best_friends{
+              name
+              username
+            }
+            sent_best_friend_requests{
+              name
+              username
+            }
+          }
+        }
+      }
+    `;
+    const response = await executeQueryOrMutation(operationsDoc , "CancelBestFriendRequest");
+    return response;
 }
 
 const AcceptFriendRequest = async function (my_user_id , friend_user_id){
@@ -566,7 +636,7 @@ module.exports = {
   "sendFriendRequest" : SendFriendRequest,
   "cancelFriendRequest" : CancelFriendRequest,
   "sendBestFriendRequest" : SendBestFriendRequest,
-  "cancelBestFriendRequest" : CancelFriendRequest,
+  "cancelBestFriendRequest" : CancelBestFriendRequest,
   "acceptFriendRequest" : AcceptFriendRequest,
   "declineFriendRequest" : DeclineFriendRequest,
   "acceptBestFriendRequest" : AcceptBestFriendRequest,
@@ -574,3 +644,4 @@ module.exports = {
   "removeFriend" : RemoveFriend,
   "removeBestFriend" :  RemoveBestFriend
 }
+// GetUsers("001");
