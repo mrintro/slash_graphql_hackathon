@@ -602,6 +602,13 @@ const RemoveBestFriend = async function (my_user_id , friend_user_id){
                     user_id: "` + friend_user_id + `"
                 }
               ]
+            },
+            set:{
+              friends: [
+                {
+                  user_id: "` + friend_user_id + `"
+                }
+              ]
             }
           }){
             user {
