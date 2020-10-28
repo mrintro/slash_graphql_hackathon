@@ -122,8 +122,8 @@ fetchUsers();
 
 
 (async () =>{
-    await app.start(3000);
-    console.log("Bot Active at 3000");
+    await app.start(5010);
+    console.log("Bot Active at 5010");
 })();
 
 

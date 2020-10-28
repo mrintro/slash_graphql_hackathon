@@ -9,6 +9,8 @@ const {WebClient} = require('@slack/web-api');
 const axios = require('axios');
 const bodyParser = require('body-parser');
 const { response } = require('express');
+const controller = require('./routes/controller');
+const slackSlashController = require('./routes/slashCommand/slashController');
 
 // Creating adapters
 const slackSigningSecret = process.env.SIGNING_SECRET;
@@ -25,9 +27,9 @@ const express_app = express();
 //Attaching adapter
 express_app.use('/slack/events', slackEvents.expressMiddleware());
 express_app.use('/slack/actions', slackInteraction.expressMiddleware());
-
+                 
 //slashcommand Handler
-express_app.post('/slack/commands', bodyParser.urlencoded({extended: false}), slackSlashCommand);
+express_app.post('/slack/commands', bodyParser.urlencoded({extended: false}), slackSlashController);
 
 
 slackEvents.on('error', (error) => {
@@ -50,50 +52,39 @@ slackEvents.on('message',(message, body) => {
 });
 
 //Slack Interactive message handlers
-slackInteraction.action('accept_tos', (payload, response) => {
+slackInteraction.action({type: 'button'}, (payload, respond)=> {
+    console.log("payload", payload.actions[0].text);
+    const message = {
+        "blocks": [
+            {
+                "type": "actions",
+                "elements": [
+                    {
+                        "type": "button",
+                        "text": {
+                            "type": "plain_text",
+                            "emoji": true,
+                            "text": "Accept Friend Request"
+                        },
+                        "style": "primary",
+                        "value": "click_me_123"
+                    }
+                ]
+            }
+        ]
+    };
+    console.log("message", message);
+    return message;
+})
+
+
+slackInteraction.action('sendFriendRequest U01AJCWA5HT', (payload, response) => {
     const reply = payload.original_message;
     console.log(reply);
     delete reply.attachments[0].actions[0];
     console.log(reply);
     return reply;
 });
-
-
-
-
-
-const interactiveButtons = {
-    text: 'The terms of service for this app are _not really_ here: <https://unsplash.com/photos/bmmcfZqSjBU>',
-    response_type: 'in_channel',
-    attachments: [{
-      text: 'Do you accept the terms of service?',
-      callback_id: 'accept_tos',
-      actions: [
-        {
-          name: 'accept_tos',
-          text: 'Yes',
-          value: 'accept',
-          type: 'button',
-          style: 'primary',
-        },
-        {
-          name: 'accept_tos',
-          text: 'No',
-          value: 'deny',
-          type: 'button',
-          style: 'danger',
-        },
-      ],
-    }],
-  };
-
-// slash command handler
-function slackSlashCommand(req,res,next){
-    if(req.body.command === '/search-user'){
-        console.log(req.body);
-        res.json(interactiveButtons);
-    }
-}
 
 
 const server = createServer(express_app);
