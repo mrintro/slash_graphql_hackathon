@@ -95,7 +95,7 @@ const GetUsers = async function(){
     }
   `;
   const data = await executeQueryOrMutation(operationsDoc , "GetAllUsers");
-//   console.log(data);
+  // console.log(data);
     return data;
 }
 
@@ -644,4 +644,5 @@ module.exports = {
   "removeFriend" : RemoveFriend,
   "removeBestFriend" :  RemoveBestFriend
 }
-// GetUsers("001");
+// GetUsers("000");
+// AddUser("001" , "shashank2409" , "Shashank Gupta" , "sha@gmail.com" , "no");
