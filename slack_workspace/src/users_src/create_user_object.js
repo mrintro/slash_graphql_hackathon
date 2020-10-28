@@ -1,37 +1,31 @@
 module.exports = function (details){
+    let buttons = details.buttons;
+    let button, obj=[];
+    for(button of buttons){
+        obj.push({
+                "type" : "button",
+                "text" : {
+                    "type" : "plain_text",
+                    "emoji": true,
+                    "text" : button.name
+                },
+                "style" : "primary",
+                "value" : button.action+" "+details.user_id
+        })
+    }
+    
     return [{
             "type" : "section",
             "fields" : [
                 {
                     "type": "mrkdwn",
-                    "text": `*${details['Name']}*\n${details['username']}`
+                    "text": `*${details['username']}*\n${details['email']}`
                 }
             ]
         },
         {
             "type" : "actions",
-            "elements" : [
-                {
-                    "type" : "button",
-                    "text" : {
-                        "type" : "plain_text",
-                        "emoji": true,
-                        "text" : "Send Friend Request"
-                    },
-                    "style" : "primary",
-                    "value" : "click_me"
-                },
-                {
-                    "type" : "button",
-                    "text" : {
-                        "type" : "plain_text",
-                        "emoji": true,
-                        "text" : "Block"
-                    },
-                    "style" : "primary",
-                    "value" : "click_me"
-                }
-            ]
+            "elements" : obj
         },
         {
             "type" : "divider"
