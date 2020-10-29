@@ -1,5 +1,6 @@
 const { sendFriendRequest, cancelBestFriendRequest } = require("./index.js");
 const database_queries = require ("./index.js");
+const next_button = require("../slack_workspace/src/users_src/nextButton")
 
 const checkRelation = async function(relation , user_data , user2_id){
     for(var i = 0; i < user_data[relation].length; i++){
@@ -26,15 +27,19 @@ const addRelationButtons = async function(all_users , user_data){
         var buttons = [];
         if(friend == 1){
             buttons = [{
-                    "name" : "Remove " + friend_name + " from Friends",
+                    "name" : "Remove from Friends",
                     "action" : "removeFriend"
+                },
+                {
+                    "name" : "Send Best Friend Request",
+                    "action" : "sendBestFriendRequest"
                 }
             ];
         }
         var best_friend = await checkRelation("best_friends" , user_data , friend_user_id);
         if(best_friend == 1){
             buttons = [{
-                "name" : "Remove " + friend_name + " from Best Friends",
+                "name" : "Remove from Best Friends",
                 "action" : "removeBestFriend"
             }];
         }
@@ -136,13 +141,15 @@ const GetUserWithUsername = async function (my_user_id , username){
 
 /* GET ALL USERS WITH NAME */
 const SearchUserWithName = async function(my_user_id , name){
+    // console.log("name->",name);
     var all_users = await database_queries.searchUserWithName(name) , user_data = await database_queries.getUserWithUserId(my_user_id);
-    console.log("data -> " , all_users , user_data);
+    // console.log("data -> " , all_users , user_data);
     all_users = await all_users.queryUser;
     user_data = await user_data.getUser;
-    console.log(all_users);
+    // console.log("dsa->",all_users);
 
     all_users = await addRelationButtons(all_users , user_data);
+    // console.log("allusers",all_users);
     return all_users;
 }
 
@@ -168,52 +175,62 @@ const GetMySentRequests = async function (user_id){
 
 /* SEND FRIEND REQUEST */
 const SendFriendRequest = async function (my_user_id , friend_user_id){
-    return await database_queries.sendFriendRequest(my_user_id , friend_user_id);
+    var temp = await database_queries.sendFriendRequest(my_user_id , friend_user_id);
+    return await next_button.nextButton("sendFriendRequest");
 }
 
 /* CANCEL FRIEND REQUEST */
 const CancelFriendRequest = async function(my_user_id , friend_user_id){
-    return await database_queries.cancelFriendRequest(my_user_id , friend_user_id);
+    var temp =  await database_queries.cancelFriendRequest(my_user_id , friend_user_id);
+    return await next_button.nextButton("cancelFriendRequest");
 }
 
 /* SEND BEST FRIEND REQUEST */
 const SendBestFriendRequest = async function (my_user_id , friend_user_id){
-    return await database_queries.sendBestFriendRequest(my_user_id , friend_user_id);
+    var temp = await database_queries.sendBestFriendRequest(my_user_id , friend_user_id);
+    return await next_button.nextButton("sendBestFriendRequest");
 }
 
 /* CANCEL BEST FRIEND REQUEST */
 const CancelBestFriendRequest = async function(my_user_id , friend_user_id){
-    return await database_queries.cancelBestFriendRequest(my_user_id , friend_user_id);
+    var temp = await database_queries.cancelBestFriendRequest(my_user_id , friend_user_id);
+    return await next_button.nextButton("cancelBestFriendRequest");
 }
 
 /* ACCEPT AN INCOMING FRIEND REQUEST */
 const AcceptFriendRequest = async function (my_user_id , friend_user_id){
-    return await database_queries.acceptFriendRequest(my_user_id , friend_user_id);
+    var temp = await database_queries.acceptFriendRequest(my_user_id , friend_user_id);
+    return await next_button.nextButton("acceptFriendRequest");
 }
 
 /* DECLINE AN INCOMING FRIEND REQUEST */
 const DeclineFriendRequest = async function (my_user_id , friend_user_id){
-    return await database_queries.declineFriendRequest(my_user_id , friend_user_id);
+    var temp = await database_queries.declineFriendRequest(my_user_id , friend_user_id);
+    return await next_button.nextButton("declineFriendRequest");
 }
 
 /* ACCEPT AN INCOMING BEST FRIEND REQUEST */
 const AcceptBestFriendRequest = async function (my_user_id , friend_user_id){
-    return await database_queries.acceptBestFriendRequest(my_user_id , friend_user_id);
+    var temp = await database_queries.acceptBestFriendRequest(my_user_id , friend_user_id);
+    return await next_button.nextButton("acceptBestFriendRequest");
 }
 
 /* DECLINE AN INCOMING BEST FRIEND REQUEST */
 const DeclineBestFriendRequest = async function (my_user_id , friend_user_id){
-    return await database_queries.declineBestFriendRequest(my_user_id , friend_user_id);
+    var temp = await database_queries.declineBestFriendRequest(my_user_id , friend_user_id);
+    return await next_button.nextButton("declineBestFriendRequest");
 }
 
 /* REMOVE A FRIEND FROM YOUR FRIEND LIST */
 const RemoveFriend = async function (my_user_id , friend_user_id){
-    return await database_queries.removeFriend(my_user_id , friend_user_id);
+    var temp = await database_queries.removeFriend(my_user_id , friend_user_id);
+    return await next_button.nextButton("removeFriend");
 }
 
 /* REMOVE A FRIEND FROM YOUR BEST FRIEND LIST */
 const RemoveBestFriend = async function (my_user_id , friend_user_id){
-    return await database_queries.removeBestFriend(my_user_id , friend_user_id);
+    var temp = await database_queries.removeBestFriend(my_user_id , friend_user_id);
+    return await next_button.nextButton("removeBestFriend");
 }
 
 const AddTask = async function (task , username , name , email , type ){

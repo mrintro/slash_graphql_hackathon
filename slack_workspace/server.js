@@ -11,6 +11,7 @@ const bodyParser = require('body-parser');
 const { response } = require('express');
 const controller = require('./routes/controller');
 const slackSlashController = require('./routes/slashCommand/slashController');
+const actionController = require('./routes/actionRoutes/actionController');
 
 // Creating adapters
 const slackSigningSecret = process.env.SIGNING_SECRET;
@@ -52,13 +53,11 @@ slackEvents.on('message',(message, body) => {
 });
 
 //Slack Interactive message handlers
-slackInteraction.action('game', async (message, respond)=> {
-    console.log('message',message.original_message);
-    const reply = message.original_message;
-    delete reply.attachments[0].actions[0];
-    await console.log(reply);
+slackInteraction.action('user_button', async (message, respond)=> {
+    const reply = await actionController(message);
     return reply;
 })
+
 
 
 slackInteraction.action('sendFriendRequest U01AJCWA5HT', (message, response) => {
