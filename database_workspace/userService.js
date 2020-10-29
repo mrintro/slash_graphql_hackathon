@@ -66,7 +66,6 @@ const addRelationButtons = async function(all_users , user_data){
         var rec_bf_req = await checkRelation("received_best_friend_requests" , user_data , friend_user_id);
         
         if(rec_bf_req == 1){
-            
             buttons = [{
                 "name" : "Accept Best Friend Request",
                 "action" : "acceptBestFriendRequest"
