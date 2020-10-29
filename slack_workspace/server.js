@@ -52,35 +52,18 @@ slackEvents.on('message',(message, body) => {
 });
 
 //Slack Interactive message handlers
-slackInteraction.action({type: 'button'}, (payload, respond)=> {
-    console.log("payload", payload.actions[0].text);
-    const message = {
-        "blocks": [
-            {
-                "type": "actions",
-                "elements": [
-                    {
-                        "type": "button",
-                        "text": {
-                            "type": "plain_text",
-                            "emoji": true,
-                            "text": "Accept Friend Request"
-                        },
-                        "style": "primary",
-                        "value": "click_me_123"
-                    }
-                ]
-            }
-        ]
-    };
-    console.log("message", message);
-    return message;
+slackInteraction.action('game', async (message, respond)=> {
+    console.log('message',message.original_message);
+    const reply = message.original_message;
+    delete reply.attachments[0].actions[0];
+    await console.log(reply);
+    return reply;
 })
 
 
-slackInteraction.action('sendFriendRequest U01AJCWA5HT', (payload, response) => {
-    const reply = payload.original_message;
-    console.log(reply);
+slackInteraction.action('sendFriendRequest U01AJCWA5HT', (message, response) => {
+    console.log('payload',message);
+    const reply = message.original_message;
     delete reply.attachments[0].actions[0];
     console.log(reply);
     return reply;
