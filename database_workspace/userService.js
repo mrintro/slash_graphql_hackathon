@@ -168,6 +168,7 @@ const GetMySentRequests = async function (user_id){
 
 /* SEND FRIEND REQUEST */
 const SendFriendRequest = async function (my_user_id , friend_user_id){
+    
     return await database_queries.sendFriendRequest(my_user_id , friend_user_id);
 }
 
