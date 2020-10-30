@@ -4,6 +4,7 @@ type User {
     name: String! @search(by: [term , regexp])
     email: String @search(by: [hash])
     profile_picture: String
+    channel_id: String!
 
     block_list: [User]
     friends: [User] @hasInverse(field: friends)

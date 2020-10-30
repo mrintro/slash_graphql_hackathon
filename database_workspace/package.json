@@ -2,9 +2,9 @@
   "name": "database_workspace",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "send_mail.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "node send_mail.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -12,6 +12,7 @@
   "dependencies": {
     "graphql": "^15.3.0",
     "node-fetch": "^2.6.1",
+    "nodemailer": "^6.4.14",
     "request": "^2.81.0"
   }
 }
