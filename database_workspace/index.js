@@ -1,5 +1,5 @@
 const fetch = require('node-fetch');
-const database_url = "http://localhost:8080/graphql";
+const database_url = "https://melted-price.ap-south-1.aws.cloud.dgraph.io/graphql";
 
 async function fetchGraphQL(operationsDoc, operationName, variables) {
     const result = await fetch(
@@ -95,7 +95,7 @@ const GetUsers = async function(){
     }
   `;
   const data = await executeQueryOrMutation(operationsDoc , "GetAllUsers");
-//   console.log(data);
+  // console.log(data);
     return data;
 }
 
@@ -651,4 +651,5 @@ module.exports = {
   "removeFriend" : RemoveFriend,
   "removeBestFriend" :  RemoveBestFriend
 }
-// GetUsers("001");
+// GetUsers("000");
+// AddUser("001" , "shashank2409" , "Shashank Gupta" , "sha@gmail.com" , "no");

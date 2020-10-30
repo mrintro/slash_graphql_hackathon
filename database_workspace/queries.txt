@@ -121,3 +121,62 @@ mutation AddBestFriend {
     }
   }
 }
+
+
+
+req body {
+  type: 'interactive_message',
+  actions: [
+    { name: 'accept_tos', type: 'button', value: 'sendFriendRequest' }
+  ],
+  callback_id: 'user_button',
+  team: { id: 'TTCFNBZLP', domain: 'dawnbreakershq' },
+  channel: { id: 'D01BT2UF1JA', name: 'directmessage' },
+  user: { id: 'UTAKQ03FS', name: 'aniketpanwar.1998' },
+  action_ts: '1604000452.698323',
+  message_ts: '1604000410.000800',
+  attachment_id: '2',
+  token: 'lhGeel2TUkHrMzWMjByV4lNb',
+  is_app_unfurl: false,
+  original_message: {
+    type: 'message',
+    subtype: 'bot_message',
+    text: 'Search results for Shashank',
+    ts: '1604000410.000800',
+    bot_id: 'B01CZBZPCAD',
+    attachments: [ [Object], [Object] ]
+  },
+  response_url: 'https://hooks.slack.com/actions/TTCFNBZLP/1476380119233/Jkuo5sz89bIf4YAitdKh4gt7',
+  trigger_id: '1457019532390.930532407703.b6d2d03b5d0b811c6418c3002ec4e540'
+}
+message {
+  type: 'message',
+  subtype: 'bot_message',
+  text: 'Search results for Shashank',
+  ts: '1604000410.000800',
+  bot_id: 'B01CZBZPCAD',
+  attachments: [
+    {
+      callback_id: 'user_button',
+      fallback: 'Unable to search user',
+      text: 'ashish.sharma (Ashish Sharma)',
+      id: 1,
+      thumb_height: 72,
+      thumb_width: 72,
+      thumb_url: 'https://secure.gravatar.com/avatar/4a85c75e7bb5c7a8b004ad807f1566e1.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0003-72.png',
+      color: '000000',
+      actions: [Array]
+    },
+    {
+      callback_id: 'user_button',
+      fallback: 'Unable to search user',
+      text: 'shashankgupta588 (Shashank Gupta)',
+      id: 2,
+      thumb_height: 72,
+      thumb_width: 72,
+      thumb_url: 'https://avatars.slack-edge.com/2020-09-14/1373985826305_73cc716b154d8d0e6763_72.jpg',
+      color: '000000',
+      actions: [Array]
+    }
+  ]
+}
