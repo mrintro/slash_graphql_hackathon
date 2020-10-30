@@ -4,7 +4,7 @@ const { App, ContextMissingPropertyError } = require('@slack/bolt');
 const bodyParser = require('body-parser');
 const users = require('./routes/users');
 const databasemodule = require('../database_workspace/index')
-const actions = require("./routes/actionRoute/actionroute")
+// const actions = require("./routes/actionRoute/actionroute")
 const { createMessageAdapter } = require('@slack/interactive-messages');
 require('dotenv').config();
 const slackInteractions = createMessageAdapter(process.env.SIGNING_SECRET);
@@ -30,10 +30,6 @@ function slackSlashCommand(req, res, next) {
     next();
   }
 }
-
-
-
-
 
 
 /*
@@ -63,7 +59,7 @@ slackInteractions.action({ type: 'button' }, (payload, respond) => {
 
 express_app.use("/users",users);
 
-express_app.use("/actions",actions)
+// express_app.use("/actions",actions)
 
 
 express_app.post('/test', (req,res) => {
@@ -97,8 +93,8 @@ async function fetchUsers() {
         const result = await app.client.users.list({
         token: process.env.SLACK_APP_TOKEN_ID
     });
-
-    saveUsers(result.members);
+    console.log(result.members);
+    // saveUsers(result.members);
   }
   catch (error) {
     console.error(error);
@@ -118,7 +114,16 @@ function saveUsers(usersArray) {
     console.log(databasemodule.getUsers())
 }
 
-fetchUsers();
+// fetchUsers();
+
+
+
+async function getChannel() {
+  let result = await app.client.channels.list();
+  console.log(result);
+}
+
+getChannel();
 
 
 (async () =>{

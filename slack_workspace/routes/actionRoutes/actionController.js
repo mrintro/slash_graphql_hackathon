@@ -1,10 +1,15 @@
+require('dotenv').config();
+
 const buttonBuilder = require('../../src/buttonBuilder');
 const dbUserModules = require('../../../database_workspace/userService');
+const dbmodule = require('../../../database_workspace/userService');
+const {WebClient} = require('@slack/web-api');
 
+const web = new WebClient(process.env.SLACK_APP_TOKEN_ID);
 
 module.exports = async (req_body) => {
     console.log("req body", req_body);
-    console.log("message", req_body.original_message);
+    // console.log("message", req_body.original_message);
 
     let valueOfAction = req_body.actions[0].value;
     let userID1 = req_body.user.id;
@@ -21,6 +26,11 @@ module.exports = async (req_body) => {
             "buttons" : actionNew,
             "user_id" : userID2
         }
+        // (async () => {
+        //     await web.chat.postMessage({
+        //         channel: 
+        //     })
+        // })
         reply.attachments[attachmentID-1].actions = buttonBuilder(obj);
         console.log("reply2", reply.attachments);
         return reply;

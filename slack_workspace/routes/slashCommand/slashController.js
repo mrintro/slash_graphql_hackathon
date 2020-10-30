@@ -1,6 +1,11 @@
+require('dotenv').config();
+
 const create_heading = require('../../src/create_heading');
 const create_user_object = require('../../src/users_src/create_user_object');
 const dbmodule = require('../../../database_workspace/userService');
+const {WebClient} = require('@slack/web-api');
+
+const web = new WebClient(process.env.SLACK_APP_TOKEN_ID);
 
 
 module.exports = async (req, res, next) => {
@@ -41,5 +46,23 @@ module.exports = async (req, res, next) => {
         }
         res.send(message);
     }
+
+    else if(req.body.command === '/list-best-friends'){
+        let search_response = await dbmodule.getMyFriends(req.body.user_id);
+        let heading = `Search results for ${search_response} from <@${req.body.user}>`;
+
+        let message = {
+            "blocks" : []
+        };
+
+        message.blocks.push(...create_heading(heading));
+        let user;
+        for(user of search_response){
+            message.blocks.push(...create_user_object);
+        }
+        res.send(message);
+    }
+
+    // else if(req.body.command === )
 
 }
