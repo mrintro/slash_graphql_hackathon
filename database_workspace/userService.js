@@ -1,6 +1,10 @@
 const { sendFriendRequest, cancelBestFriendRequest } = require("./index.js");
 const database_queries = require ("./index.js");
 const next_button = require("../slack_workspace/src/users_src/nextButton")
+const error_button = [{
+    "name" : "This button has expired",
+    "action" : "nothing"
+}]
 
 const checkRelation = async function(relation , user_data , user2_id){
     for(var i = 0; i < user_data[relation].length; i++){
@@ -175,6 +179,47 @@ const GetMySentRequests = async function (user_id){
 
 /* SEND FRIEND REQUEST */
 const SendFriendRequest = async function (my_user_id , friend_user_id){
+    /**Pakka koi relation nahi hai
+     * 
+     * sent_requests
+     * received_requests
+     * friends
+     * best_friends
+     * received_best_friend_request
+     * sent_best_friend_request
+     * 
+     * in lists mai nahi hai
+     */
+
+    var user_data = await database_queries.getUserWithUserId(my_user_id);
+
+    var friend = checkRelation("friends" , user_data , friend_user_id);
+    if(friend){
+        return error_button;
+    }
+    var best_friend = await checkRelation("best_friends" , user_data , friend_user_id);
+    if(best_friend == 1){
+        return error_button;
+    }
+    var sent_friend_req = await checkRelation("sent_requests" , user_data , friend_user_id);
+    if(sent_friend_req == 1){
+        return error_button;
+    }
+    var received_friend_req = await checkRelation("received_requests" , user_data , friend_user_id);
+    if(received_friend_req == 1){
+        return error_button;
+    }
+    var sent_bf_req = await checkRelation("sent_best_friend_requests" , user_data , friend_user_id);
+    if(sent_bf_req == 1){
+        return error_button;
+    }
+    var sent_bf_req = await checkRelation("received_best_friend_requests" , user_data , friend_user_id);
+    if(sent_bf_req == 1){
+        return error_button;
+    }
+
+
+
     var temp = await database_queries.sendFriendRequest(my_user_id , friend_user_id);
     return await next_button.nextButton("sendFriendRequest");
 }
@@ -182,59 +227,275 @@ const SendFriendRequest = async function (my_user_id , friend_user_id){
 /* CANCEL FRIEND REQUEST */
 const CancelFriendRequest = async function(my_user_id , friend_user_id){
     var temp =  await database_queries.cancelFriendRequest(my_user_id , friend_user_id);
+
+    var user_data = await database_queries.getUserWithUserId(my_user_id);
+
+    var friend = checkRelation("friends" , user_data , friend_user_id);
+    if(friend){
+        return error_button;
+    }
+    var best_friend = await checkRelation("best_friends" , user_data , friend_user_id);
+    if(best_friend == 1){
+        return error_button;
+    }
+    var received_friend_req = await checkRelation("received_requests" , user_data , friend_user_id);
+    if(received_friend_req == 1){
+        return error_button;
+    }
+    var sent_bf_req = await checkRelation("sent_best_friend_requests" , user_data , friend_user_id);
+    if(sent_bf_req == 1){
+        return error_button;
+    }
+    var sent_bf_req = await checkRelation("received_best_friend_requests" , user_data , friend_user_id);
+    if(sent_bf_req == 1){
+        return error_button;
+    }
+
     return await next_button.nextButton("cancelFriendRequest");
 }
 
 /* SEND BEST FRIEND REQUEST */
 const SendBestFriendRequest = async function (my_user_id , friend_user_id){
     var temp = await database_queries.sendBestFriendRequest(my_user_id , friend_user_id);
+
+    var user_data = await database_queries.getUserWithUserId(my_user_id);
+
+    var best_friend = await checkRelation("best_friends" , user_data , friend_user_id);
+    if(best_friend == 1){
+        return error_button;
+    }
+    var sent_friend_req = await checkRelation("sent_requests" , user_data , friend_user_id);
+    if(sent_friend_req == 1){
+        return error_button;
+    }
+    var received_friend_req = await checkRelation("received_requests" , user_data , friend_user_id);
+    if(received_friend_req == 1){
+        return error_button;
+    }
+    var sent_bf_req = await checkRelation("sent_best_friend_requests" , user_data , friend_user_id);
+    if(sent_bf_req == 1){
+        return error_button;
+    }
+    var sent_bf_req = await checkRelation("received_best_friend_requests" , user_data , friend_user_id);
+    if(sent_bf_req == 1){
+        return error_button;
+    }
+
     return await next_button.nextButton("sendBestFriendRequest");
 }
 
 /* CANCEL BEST FRIEND REQUEST */
 const CancelBestFriendRequest = async function(my_user_id , friend_user_id){
     var temp = await database_queries.cancelBestFriendRequest(my_user_id , friend_user_id);
+
+    var user_data = await database_queries.getUserWithUserId(my_user_id);
+
+    var friend = checkRelation("friends" , user_data , friend_user_id);
+    if(friend){
+        return error_button;
+    }
+    var best_friend = await checkRelation("best_friends" , user_data , friend_user_id);
+    if(best_friend == 1){
+        return error_button;
+    }
+    var sent_friend_req = await checkRelation("sent_requests" , user_data , friend_user_id);
+    if(sent_friend_req == 1){
+        return error_button;
+    }
+    var received_friend_req = await checkRelation("received_requests" , user_data , friend_user_id);
+    if(received_friend_req == 1){
+        return error_button;
+    }
+    var sent_bf_req = await checkRelation("received_best_friend_requests" , user_data , friend_user_id);
+    if(sent_bf_req == 1){
+        return error_button;
+    }
+
     return await next_button.nextButton("cancelBestFriendRequest");
 }
 
 /* ACCEPT AN INCOMING FRIEND REQUEST */
 const AcceptFriendRequest = async function (my_user_id , friend_user_id){
     var temp = await database_queries.acceptFriendRequest(my_user_id , friend_user_id);
+
+    var user_data = await database_queries.getUserWithUserId(my_user_id);
+
+    var friend = checkRelation("friends" , user_data , friend_user_id);
+    if(friend){
+        return error_button;
+    }
+    var best_friend = await checkRelation("best_friends" , user_data , friend_user_id);
+    if(best_friend == 1){
+        return error_button;
+    }
+    var sent_friend_req = await checkRelation("sent_requests" , user_data , friend_user_id);
+    if(sent_friend_req == 1){
+        return error_button;
+    }
+    var sent_bf_req = await checkRelation("sent_best_friend_requests" , user_data , friend_user_id);
+    if(sent_bf_req == 1){
+        return error_button;
+    }
+    var sent_bf_req = await checkRelation("received_best_friend_requests" , user_data , friend_user_id);
+    if(sent_bf_req == 1){
+        return error_button;
+    }
+
     return await next_button.nextButton("acceptFriendRequest");
 }
 
 /* DECLINE AN INCOMING FRIEND REQUEST */
 const DeclineFriendRequest = async function (my_user_id , friend_user_id){
     var temp = await database_queries.declineFriendRequest(my_user_id , friend_user_id);
+
+    var user_data = await database_queries.getUserWithUserId(my_user_id);
+
+    var friend = checkRelation("friends" , user_data , friend_user_id);
+    if(friend){
+        return error_button;
+    }
+    var best_friend = await checkRelation("best_friends" , user_data , friend_user_id);
+    if(best_friend == 1){
+        return error_button;
+    }
+    var sent_friend_req = await checkRelation("sent_requests" , user_data , friend_user_id);
+    if(sent_friend_req == 1){
+        return error_button;
+    }
+    var sent_bf_req = await checkRelation("sent_best_friend_requests" , user_data , friend_user_id);
+    if(sent_bf_req == 1){
+        return error_button;
+    }
+    var sent_bf_req = await checkRelation("received_best_friend_requests" , user_data , friend_user_id);
+    if(sent_bf_req == 1){
+        return error_button;
+    }
+
     return await next_button.nextButton("declineFriendRequest");
 }
 
 /* ACCEPT AN INCOMING BEST FRIEND REQUEST */
 const AcceptBestFriendRequest = async function (my_user_id , friend_user_id){
     var temp = await database_queries.acceptBestFriendRequest(my_user_id , friend_user_id);
+
+    var user_data = await database_queries.getUserWithUserId(my_user_id);
+
+    var friend = checkRelation("friends" , user_data , friend_user_id);
+    if(friend){
+        return error_button;
+    }
+    var best_friend = await checkRelation("best_friends" , user_data , friend_user_id);
+    if(best_friend == 1){
+        return error_button;
+    }
+    var sent_friend_req = await checkRelation("sent_requests" , user_data , friend_user_id);
+    if(sent_friend_req == 1){
+        return error_button;
+    }
+    var received_friend_req = await checkRelation("received_requests" , user_data , friend_user_id);
+    if(received_friend_req == 1){
+        return error_button;
+    }
+    var sent_bf_req = await checkRelation("sent_best_friend_requests" , user_data , friend_user_id);
+    if(sent_bf_req == 1){
+        return error_button;
+    }
+
     return await next_button.nextButton("acceptBestFriendRequest");
 }
 
 /* DECLINE AN INCOMING BEST FRIEND REQUEST */
 const DeclineBestFriendRequest = async function (my_user_id , friend_user_id){
     var temp = await database_queries.declineBestFriendRequest(my_user_id , friend_user_id);
+
+    var user_data = await database_queries.getUserWithUserId(my_user_id);
+
+    var friend = checkRelation("friends" , user_data , friend_user_id);
+    if(friend){
+        return error_button;
+    }
+    var best_friend = await checkRelation("best_friends" , user_data , friend_user_id);
+    if(best_friend == 1){
+        return error_button;
+    }
+    var sent_friend_req = await checkRelation("sent_requests" , user_data , friend_user_id);
+    if(sent_friend_req == 1){
+        return error_button;
+    }
+    var received_friend_req = await checkRelation("received_requests" , user_data , friend_user_id);
+    if(received_friend_req == 1){
+        return error_button;
+    }
+    var sent_bf_req = await checkRelation("sent_best_friend_requests" , user_data , friend_user_id);
+    if(sent_bf_req == 1){
+        return error_button;
+    }
+
     return await next_button.nextButton("declineBestFriendRequest");
 }
 
 /* REMOVE A FRIEND FROM YOUR FRIEND LIST */
 const RemoveFriend = async function (my_user_id , friend_user_id){
     var temp = await database_queries.removeFriend(my_user_id , friend_user_id);
+
+    var user_data = await database_queries.getUserWithUserId(my_user_id);
+
+    var best_friend = await checkRelation("best_friends" , user_data , friend_user_id);
+    if(best_friend == 1){
+        return error_button;
+    }
+    var sent_friend_req = await checkRelation("sent_requests" , user_data , friend_user_id);
+    if(sent_friend_req == 1){
+        return error_button;
+    }
+    var received_friend_req = await checkRelation("received_requests" , user_data , friend_user_id);
+    if(received_friend_req == 1){
+        return error_button;
+    }
+    var sent_bf_req = await checkRelation("sent_best_friend_requests" , user_data , friend_user_id);
+    if(sent_bf_req == 1){
+        return error_button;
+    }
+    var sent_bf_req = await checkRelation("received_best_friend_requests" , user_data , friend_user_id);
+    if(sent_bf_req == 1){
+        return error_button;
+    }
+
     return await next_button.nextButton("removeFriend");
 }
 
 /* REMOVE A FRIEND FROM YOUR BEST FRIEND LIST */
 const RemoveBestFriend = async function (my_user_id , friend_user_id){
     var temp = await database_queries.removeBestFriend(my_user_id , friend_user_id);
+
+    var user_data = await database_queries.getUserWithUserId(my_user_id);
+
+    var friend = checkRelation("friends" , user_data , friend_user_id);
+    if(friend){
+        return error_button;
+    }
+    var sent_friend_req = await checkRelation("sent_requests" , user_data , friend_user_id);
+    if(sent_friend_req == 1){
+        return error_button;
+    }
+    var received_friend_req = await checkRelation("received_requests" , user_data , friend_user_id);
+    if(received_friend_req == 1){
+        return error_button;
+    }
+    var sent_bf_req = await checkRelation("sent_best_friend_requests" , user_data , friend_user_id);
+    if(sent_bf_req == 1){
+        return error_button;
+    }
+    var sent_bf_req = await checkRelation("received_best_friend_requests" , user_data , friend_user_id);
+    if(sent_bf_req == 1){
+        return error_button;
+    }
+
     return await next_button.nextButton("removeBestFriend");
 }
 
-const AddTask = async function (task , username , name , email , type ){
-    return database_queries.AddTask(task , username , name , email , type);
+const Nothing = async function (){
+    return error_button;
 }
 
 module.exports = {
@@ -256,7 +517,8 @@ module.exports = {
     "acceptBestFriendRequest" : AcceptBestFriendRequest,
     "declineBestFriendRequest" : DeclineBestFriendRequest,
     "removeFriend" : RemoveFriend,
-    "removeBestFriend" :  RemoveBestFriend
+    "removeBestFriend" :  RemoveBestFriend,
+    "nothing" : Nothing
   }
 
 // GetUsers("003");
