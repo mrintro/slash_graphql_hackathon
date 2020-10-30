@@ -2,10 +2,20 @@ require('dotenv').config();
 
 const create_heading = require('../../src/create_heading');
 const create_user_object = require('../../src/users_src/create_user_object');
-const dbmodule = require('../../../database_workspace/userService');
+const create_task_object = require('../../src/task_src/create_task_object');
 const {WebClient} = require('@slack/web-api');
+const { App, LogLevel } = require("@slack/bolt");
 
-const web = new WebClient(process.env.SLACK_APP_TOKEN_ID);
+const app = new App({
+  token: process.env.SLACK_APP_TOKEN_ID,
+  signingSecret: process.env.SIGNING_SECRET,
+  // LogLevel can be imported and used to make debugging simpler
+  logLevel: LogLevel.DEBUG
+});
+
+
+const  web = new WebClient(process.env.SLACK_APP_TOKEN_ID);
+
 
 
 module.exports = async (req, res, next) => {
@@ -63,6 +73,28 @@ module.exports = async (req, res, next) => {
         res.send(message);
     }
 
-    // else if(req.body.command === )
+    else if(req.body.command === '/add-task'){
+        // let heading = `Add your new task here`;
+        // let message = {
+        //     "blocks" : []
+        // };
+        // message.blocks.push(...create_heading(heading));
+        console.log(req.body);
+        res.send("Insert Task Details");
+        let message = await create_task_object();
+        try{
+        const result = await app.client.views.open({
+            // The token you used to initialize your app is stored in the `context` object
+            token: process.env.SLACK_APP_TOKEN_ID,
+            trigger_id: req.body.trigger_id,
+            view: message
+          });
+      
+          console.log(result);
+        }
+        catch(error){
+            console.log(error);
+        }
+    }
 
 }

@@ -1,44 +1,65 @@
-module.exports = function (details){
-    return [{
-        "type": "section",
-        "fields": [
-            {
-                "type": "mrkdwn",
-                "text": `*Title:*\n${details['title']}`
+module.exports = function (){
+    return {
+            "title": {
+                "type": "plain_text",
+                "text": "Add a Task"
             },
-            {
-                "type": "mrkdwn",
-                "text": `*Posted By:*\n${details['name']}(${details['username']})`
+            "submit": {
+                "type": "plain_text",
+                "text": "Send"
             },
-            {
-                "type": "mrkdwn",
-                "text": `*Deadline:*\n${details['deadline']}`
-            }
-        ]
-    },
-    {
-        "type": "section",
-        "text": {
-            "type": "mrkdwn",
-            "text": `*Description:*\n${details['description']}`
-        }
-    },
-    {
-        "type": "actions",
-        "elements": [
-            {
-                "type": "button",
-                "text": {
-                    "type": "plain_text",
-                    "emoji": true,
-                    "text": "Volunteer for this task"
+            "blocks": [
+                {
+                    "type": "input",
+                    "element": {
+                        "type": "plain_text_input",
+                        "action_id": "sl_input",
+                        "placeholder": {
+                            "type": "plain_text",
+                            "text": "For example : 'Bring a pen'"
+                        }
+                    },
+                    "label": {
+                        "type": "plain_text",
+                        "text": "Title"
+                    }
                 },
-                "style": "primary",
-                "value": "click_me_123"
-            }
-        ]
-    }
+                {
+                    "type": "input",
+                    "element": {
+                        "type": "plain_text_input",
+                        "action_id": "sl_input",
+                        "placeholder": {
+                            "type": "plain_text",
+                            "text": "5PM, 2nd November 2010"
+                        }
+                    },
+                    "label": {
+                        "type": "plain_text",
+                        "text": "Deadline"
+                    }
+                },
+                {
+                    "type": "input",
+                    "element": {
+                        "type": "plain_text_input",
+                        "action_id": "ml_input",
+                        "multiline": true,
+                        "placeholder": {
+                            "type": "plain_text",
+                            "text": "Try to keep it as descriptive as you can"
+                        }
+                    },
+                    "label": {
+                        "type": "plain_text",
+                        "text": "Description"
+                    }
+                }
+            ],
+            "type": "modal"
+        }
     
-    ]
+    
+    
 }
 

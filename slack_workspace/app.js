@@ -8,7 +8,7 @@ const databasemodule = require('../database_workspace/index')
 const { createMessageAdapter } = require('@slack/interactive-messages');
 require('dotenv').config();
 const slackInteractions = createMessageAdapter(process.env.SIGNING_SECRET);
-
+let _ = require("underscore");
 const express = require('express');
 
 const express_app = express();
@@ -94,7 +94,13 @@ async function fetchUsers() {
         token: process.env.SLACK_APP_TOKEN_ID
     });
     console.log(result.members);
-    // saveUsers(result.members);
+    let channel_result = await getChannel();
+    console.log("channel results " , channel_result)
+    let merged_results = _.map(result.members, function(item) {
+        return _.extend(item, _.findWhere(channel_result, {user : item.id}));
+    });
+    console.log("final_results", merged_results)
+    // saveUsers(merged_results);
   }
   catch (error) {
     console.error(error);
@@ -104,7 +110,7 @@ function saveUsers(usersArray) {
     let userId = '';
     usersArray.forEach(function(user){
         if(user.is_bot==false){
-            databasemodule.addUser(user.id, user.name, user.real_name, user.profile.email, user.profile.image_72)
+            databasemodule.addUser(user.user, user.name, user.real_name, user.profile.email, user.profile.image_72, user.id);
             console.log("adding user "+user.name);
         }
         userId = user["id"];
@@ -114,16 +120,24 @@ function saveUsers(usersArray) {
     console.log(databasemodule.getUsers())
 }
 
-// fetchUsers();
-
+fetchUsers();
 
 
 async function getChannel() {
-  let result = await app.client.channels.list();
+  try {
+    const result = await app.client.conversations.list({
+    token: process.env.SLACK_APP_TOKEN_ID,
+    types :  "mpim, im" 
+  });
   console.log(result);
+  return result.channels;
+// saveUsers(result.members);
+  }
+  catch (error) {
+  console.error(error);
+}
 }
 
-getChannel();
 
 
 (async () =>{
@@ -132,9 +146,8 @@ getChannel();
 })();
 
 
+//slack integration ahea
 
-
-//slack integration ahead
 /*
 
 
@@ -217,4 +230,5 @@ slackInteractions.action({ type: 'static_select' }, (payload, respond) => {
     await slackInteractions.start(4000);
     console.log("listening on port 4000");
 });
+
 */
