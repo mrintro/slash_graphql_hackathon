@@ -1,6 +1,6 @@
 const fetch = require('node-fetch');
 const { getUserWithUserId } = require('.');
-const database_url = "http://localhost:8080/graphql";
+const database_url = "https://melted-price.ap-south-1.aws.cloud.dgraph.io/graphql";
 
 async function fetchGraphQL(operationsDoc, operationName, variables) {
     const result = await fetch(
