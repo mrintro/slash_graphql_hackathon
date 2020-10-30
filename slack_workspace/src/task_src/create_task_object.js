@@ -1,5 +1,7 @@
 module.exports = function (){
     return {
+            "type": "modal",
+            "callback_id":"interactive-submit",
             "title": {
                 "type": "plain_text",
                 "text": "Add a Task"
@@ -55,8 +57,7 @@ module.exports = function (){
                         "text": "Description"
                     }
                 }
-            ],
-            "type": "modal"
+            ]
         }
     
     

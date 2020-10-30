@@ -93,7 +93,7 @@ module.exports = async (req, res, next) => {
           console.log(result);
         }
         catch(error){
-            console.log(error);
+            console.log(error.ressponse_metadata);
         }
     }
 
