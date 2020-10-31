@@ -2,9 +2,9 @@
   "name": "database_workspace",
   "version": "1.0.0",
   "description": "",
-  "main": "send_mail.js",
+  "main": "userService.js",
   "scripts": {
-    "start": "node send_mail.js",
+    "start": "node userService.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
