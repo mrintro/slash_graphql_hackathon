@@ -96,5 +96,19 @@ module.exports = async (req, res, next) => {
             console.log(error.ressponse_metadata);
         }
     }
+    // else if(req.body.command === '/list-friends-task'){
+    //     let search_response = await dbmodule.getMyFriends(req.body.user_id);
+    //     let heading = `Search results for ${search_response} from <@${req.body.user}>`;
 
+    //     let message = {
+    //         "blocks" : []
+    //     };
+
+    //     message.blocks.push(...create_heading(heading));
+    //     let user;
+    //     for(user of search_response){
+    //         message.blocks.push(...create_user_object);
+    //     }
+    //     res.send(message);
+    // }
 }
