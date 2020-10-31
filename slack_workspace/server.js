@@ -59,6 +59,13 @@ slackInteraction.action('user_button', async (message, respond)=> {
 })
 
 
+slackInteraction.viewSubmission({callbackId: 'interactive-submit'}, async(message, respond) => {
+    console.log("message", message);
+    return {
+        text: 'Thanks!',
+      };
+});
+
 
 slackInteraction.action('sendFriendRequest U01AJCWA5HT', (message, response) => {
     console.log('payload',message);
@@ -67,6 +74,7 @@ slackInteraction.action('sendFriendRequest U01AJCWA5HT', (message, response) => 
     console.log(reply);
     return reply;
 });
+
 
 
 const server = createServer(express_app);

@@ -6,6 +6,12 @@ const error_button = [{
     "action" : "nothing"
 }]
 
+function toTitleCase(str) {
+    return str.replace(/\w\S*/g, function(txt){
+        return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+    });
+}
+
 const checkRelation = async function(relation , user_data , user2_id){
     console.log(user2_id);
     for(var i = 0; i < user_data[relation].length; i++){
@@ -24,6 +30,8 @@ const addRelationButtons = async function(all_users , user_data){
     console.log(all_users);
     console.log(typeof(all_users));
     for(var i = 0; i < all_users.length; i++){
+        all_users[i]["name"] = await toTitleCase(all_users[i]["name"]);
+        all_users[i]["username"] = await toTitleCase(all_users[i]["username"]);
         friend_user_id = all_users[i]["user_id"] , friend_name = all_users[i]["name"];
         if(friend_user_id == my_user_id){
             continue;
@@ -100,8 +108,8 @@ const addRelationButtons = async function(all_users , user_data){
 }
 
 /* ADD A USER */
-const AddUser = async function (id , username , name , email , profile_picture){
-    return await database_queries.AddUser(id , username , name , email , profile_picture);
+const AddUser = async function (id , username , name , email , profile_picture , channel_id){
+    return await database_queries.addUser(id , username , name , email , profile_picture , channel_id);
 }
  
  /* GET ALL USERS(ONLY FOR ADMINS) */
