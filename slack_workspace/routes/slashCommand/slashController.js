@@ -3,9 +3,12 @@ require('dotenv').config();
 const create_heading = require('../../src/create_heading');
 const create_user_object = require('../../src/users_src/create_user_object');
 const create_task_object = require('../../src/task_src/create_task_object');
+const create_show_task_object = require('../../src/task_src/create_show_task_object');
+const create_show_my_task_object = require('../../src/task_src/create_show_my_task_object');
 const {WebClient} = require('@slack/web-api');
-const { App, LogLevel } = require("@slack/bolt");
+const { App, LogLevel } = require("@slack/bolt"); 
 const dbmodule = require('../../../database_workspace/userService')
+const dbTaskModule = require('../../../database_workspace/taskService')
 
 const app = new App({
   token: process.env.SLACK_APP_TOKEN_ID,
@@ -42,35 +45,50 @@ module.exports = async (req, res, next) => {
         console.log(message);
         res.send(message);
     }
-    else if(req.body.commad === '/list-friends'){
+    else if(req.body.command === '/list-friends'){
         let search_response = await dbmodule.getMyFriends(req.body.user_id);
-        let heading = `Search results for ${search_response} from <@${req.body.user}>`;
-
+        console.log(req.body.user_name , " user");
+        let heading = `My Friends' List`;
+        // search_response = await search_response.getUser.friends;
+        if(search_response.length == 0){
+            heading = `No friend in Friend List`;
+        }
         let message = {
-            "blocks" : []
+            "text": heading,
+            "response_type" : 'in_channel', 
+            "attachments" : []
         };
 
-        message.blocks.push(...create_heading(heading));
+        message.attachments.push(...create_heading(heading));
         let user;
         for(user of search_response){
-            message.blocks.push(...create_user_object);
+            message.attachments.push(...create_user_object(user));
         }
+        console.log("message" , message);
         res.send(message);
     }
 
     else if(req.body.command === '/list-best-friends'){
-        let search_response = await dbmodule.getMyFriends(req.body.user_id);
-        let heading = `Search results for ${search_response} from <@${req.body.user}>`;
-
+        let search_response = await dbmodule.getMyBestFriends(req.body.user_id);
+        console.log("search response" , search_response);
+        console.log(req.body.user_name , " user");
+        let heading = `My Best Friend List`;
+        // search_response = await search_response.getUser.friends;
+        if(search_response.length == 0){
+            heading = `No Best Friend in Friends' List`;
+        }
         let message = {
-            "blocks" : []
+            "text": heading,
+            "response_type" : 'in_channel', 
+            "attachments" : []
         };
 
-        message.blocks.push(...create_heading(heading));
+        message.attachments.push(...create_heading(heading));
         let user;
         for(user of search_response){
-            message.blocks.push(...create_user_object);
+            message.attachments.push(...create_user_object(user));
         }
+        console.log("message" , message);
         res.send(message);
     }
 
@@ -97,5 +115,85 @@ module.exports = async (req, res, next) => {
             console.log(error.ressponse_metadata);
         }
     }
+    else if(req.body.command === '/list-friends-task'){
+        let search_response = await dbTaskModule.getFriendsActiveTasks(req.body.user_id);
+        let heading = `Tasks of your friends`;
+        if(search_response.length == 0){
+            heading = `No active tasks of your friends'`;
+        }
 
+        let message = {
+            "text": heading,
+            "response_type" : 'in_channel', 
+            "attachments" : []
+        };
+
+        message.attachments.push(...create_heading(heading));
+        let task;
+        var count = 0;
+        for(user of search_response){
+            active_tasks = await user.active_tasks;
+            posted_by = await user.username;
+            for(task of active_tasks){
+                message.attachments.push(...create_show_task_object(task , posted_by , count));
+            }
+            count++;
+        }
+        
+        res.send(message);
+    }
+
+    else if(req.body.command === '/list-my-tasks'){
+        let search_response = await dbTaskModule.getMyTasks(req.body.user_id);
+        let heading = `Your Tasks`;
+        if(search_response.length == 0){
+            heading = `You have no active tasks`;
+        }
+
+        let message = {
+            "text": heading,
+            "response_type" : 'in_channel', 
+            "attachments" : []
+        };
+        search_response = await search_response.getUser.active_tasks;
+        message.attachments.push(...create_heading(heading));
+        let task;
+        var count = 0;
+        for(task of search_response){
+            // console.log("aa raha hai");
+            message.attachments.push(...create_show_my_task_object(task,count));
+            count++;
+        }
+        
+        res.send(message);
+    }
+
+    else if(req.body.command === '/list-best-friend-tasks'){
+        console.log("ria check");
+        let search_response = await dbTaskModule.getBestFriendsActiveTasks(req.body.user_id);
+        let heading = `Tasks of your Best friends`;
+        if(search_response.length == 0){
+            heading = `No active tasks of your Best friends'`;
+        }
+
+        let message = {
+            "text": heading,
+            "response_type" : 'in_channel', 
+            "attachments" : []
+        };
+        console.log(search_response,"00000");
+        message.attachments.push(...create_heading(heading));
+        let task;
+        var count = 0;
+        for(user of search_response){
+            active_tasks = await user.active_tasks;
+            posted_by = await user.username;
+            for(task of active_tasks){
+                message.attachments.push(...create_show_task_object(task , posted_by , count));
+            }
+            count++;
+        }
+        
+        res.send(message);
+    }
 }

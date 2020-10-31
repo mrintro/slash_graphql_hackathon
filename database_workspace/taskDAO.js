@@ -69,7 +69,7 @@ const AddTask = async function (title , description , deadline , user_id){
         }
       }
      `;
-     console.log(operationsDoc);
+    //  console.log(operationsDoc);
      var data = await executeQueryOrMutation(operationsDoc , "AddTask");
      return data;
  }
@@ -89,20 +89,12 @@ const GetMyTasks = async function (user_id){
               }
               status
             }
-           closed_tasks{
-            title
-            description
-            deadline
-            alloted_to{
-              username
-            }
-          }
         }
       }
      `;
-     console.log(operationsDoc);
+    //  console.log(operationsDoc);
      var data = await executeQueryOrMutation(operationsDoc , "GetMyTasks");
-     console.log(data.getUser);
+    //  console.log(data.getUser);
      return data;
  }
 
@@ -121,7 +113,7 @@ const GetMyTasks = async function (user_id){
         }
       }
      `;
-     console.log(operationsDoc);
+    //  console.log(operationsDoc);
      var data = await executeQueryOrMutation(operationsDoc , "GetMyActiveTasks");
      return data;
  }
@@ -141,7 +133,7 @@ const GetMyTasks = async function (user_id){
         }
       }
      `;
-     console.log(operationsDoc);
+    //  console.log(operationsDoc);
      var data = await executeQueryOrMutation(operationsDoc , "GetMyClosedTasks");
      return data;
  }
@@ -154,6 +146,7 @@ const GetMyTasks = async function (user_id){
             friends{
                 username
                 active_tasks{
+                  task_id
                   title
                   description
                   deadline
@@ -162,10 +155,31 @@ const GetMyTasks = async function (user_id){
         }
       }
      `;
-     console.log(operationsDoc);
+    //  console.log(operationsDoc);
      var data = await executeQueryOrMutation(operationsDoc , "GetFriendsActiveTasks");
      return data;
  }
+
+ const GetBestFriendsActiveTasks = async function (user_id){
+  const operationsDoc = `
+  query GetBestFriendsActiveTasks {
+      getUser(user_id:"`+ user_id + `") {
+          best_friends{
+              username
+              active_tasks{
+                task_id
+                title
+                description
+                deadline
+              }
+          }
+      }
+    }
+   `;
+  //  console.log(operationsDoc);
+   var data = await executeQueryOrMutation(operationsDoc , "GetBestFriendsActiveTasks");
+   return data;
+}
 
  const GetTasksUsingUserId = async function (user_id){
     const operationsDoc = `
@@ -179,7 +193,7 @@ const GetMyTasks = async function (user_id){
         }
       }
      `;
-     console.log(operationsDoc);
+    //  console.log(operationsDoc);
      var data = await executeQueryOrMutation(operationsDoc , "GetTasksUsingUserId");
      return data;
  } 
@@ -196,7 +210,7 @@ const GetMyTasks = async function (user_id){
         }
       }
      `;
-     console.log(operationsDoc);
+    //  console.log(operationsDoc);
      var data = await executeQueryOrMutation(operationsDoc , "RemoveTask");
      return data;
  }
@@ -255,7 +269,7 @@ const GetMyTasks = async function (user_id){
         }
         }`;
        
-     console.log(operationsDoc);
+    //  console.log(operationsDoc);
      var data = await executeQueryOrMutation(operationsDoc , "UpdateTask");
      return data;
  }
@@ -282,7 +296,7 @@ const GetMyTasks = async function (user_id){
       }
     }`;
     var data = await executeQueryOrMutation(operationsDoc , "VolunteerTask");
-     return data;
+    return data;
  }
 
  const BackoutFromTask = async function(task_id , user_id){
@@ -362,7 +376,7 @@ const GetMyTasks = async function (user_id){
         }
         }`;
        
-     console.log(operationsDoc);
+    //  console.log(operationsDoc);
      var data = await executeQueryOrMutation(operationsDoc , "UpdateTaskStatus");
      return data;
  }
@@ -375,7 +389,7 @@ const GetMyTasks = async function (user_id){
       }
     `;
        
-     console.log(operationsDoc);
+    //  console.log(operationsDoc);
      var data = await executeQueryOrMutation(operationsDoc , "ViewTaskStatusUsingTaskId");
      return data;
  }
@@ -410,7 +424,7 @@ const GetMyTasks = async function (user_id){
       }
     `;
        
-     console.log(operationsDoc);
+    //  console.log(operationsDoc);
      var data = await executeQueryOrMutation(operationsDoc , "AssignTask");
      return data;
  }
@@ -426,13 +440,29 @@ const GetMyTasks = async function (user_id){
         }
       }
     `;
-     console.log(operationsDoc);
+    //  console.log(operationsDoc);
      var data = await executeQueryOrMutation(operationsDoc , "ViewAssignedTasks");
      return data;
  }
-GetMyTasks("002");
-UpdateTaskStatus("0x5","assigned");
-GetMyTasks("002");
+
+ const ViewVolunteers = async function(task_id){
+    const operationsDoc = `query ViewVolunteers{
+      getTask(task_id : "` + task_id + `"){
+        title
+        volunteered_by{
+          username
+          name
+          profile_picture
+        }
+      }
+    }
+    `;
+    var data = await executeQueryOrMutation(operationsDoc , "ViewVolunteers");
+    return data;
+}
+// GetMyTasks("002");
+// UpdateTaskStatus("0x5","assigned");
+// GetMyTasks("002");
 
 module.exports = {
   "addTask" : AddTask,
@@ -440,6 +470,7 @@ module.exports = {
   "getMyActiveTasks" : GetMyActiveTasks,
   "getMyClosedTasks" : GetMyClosedTasks,
   "getFriendsActiveTasks" : GetFriendsActiveTasks,
+  "getBestFriendsActiveTasks" : GetBestFriendsActiveTasks,
   "getTasksUsingUserId" : GetTasksUsingUserId,
   "removeTask" : RemoveTask,
   "assignTask" : AssignTask,
@@ -448,5 +479,6 @@ module.exports = {
   "backoutFromTask" :  BackoutFromTask,
   "volunteerTask" :  VolunteerTask,
   "updateTask" :  UpdateTask,
-  "viewAssignedTasks" : ViewAssignedTasks
+  "viewAssignedTasks" : ViewAssignedTasks,
+  "viewVolunteers" : ViewVolunteers
  };

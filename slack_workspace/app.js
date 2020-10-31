@@ -3,7 +3,7 @@
 const { App, ContextMissingPropertyError } = require('@slack/bolt');
 const bodyParser = require('body-parser');
 const users = require('./routes/users');
-const databasemodule = require('../database_workspace/index')
+const databasemodule = require('../database_workspace/userService')
 // const actions = require("./routes/actionRoute/actionroute")
 const { createMessageAdapter } = require('@slack/interactive-messages');
 require('dotenv').config();
@@ -93,34 +93,36 @@ async function fetchUsers() {
         const result = await app.client.users.list({
         token: process.env.SLACK_APP_TOKEN_ID
     });
-    console.log(result.members);
+    // console.log(result.members);
     let channel_result = await getChannel();
-    console.log("channel results " , channel_result)
+    // console.log("channel results " , channel_result)
     let merged_results = _.map(result.members, function(item) {
         return _.extend(item, _.findWhere(channel_result, {user : item.id}));
     });
-    console.log("final_results", merged_results)
+    // console.log("final_results", merged_results)
     // saveUsers(merged_results);
   }
   catch (error) {
     console.error(error);
   }
 }
-function saveUsers(usersArray) {
+async function saveUsers(usersArray) {
     let userId = '';
-    usersArray.forEach(function(user){
+    usersArray.forEach(async function(user){
         if(user.is_bot==false){
-            databasemodule.addUser(user.user, user.name, user.real_name, user.profile.email, user.profile.image_72, user.id);
-            console.log("adding user "+user.name);
+            // console.log("username" , user.user);
+            // console.log("name" , user.name);
+            var temp = await databasemodule.addUser(user.user, user.name, user.real_name, user.profile.email, user.profile.image_72, user.id);
+            // console.log("adding user "+user.name);
         }
         userId = user["id"];
         usersStore[userId] = user;
-        console.log(user.profile.email);
+        // console.log(user.profile.email);
     });
-    console.log(databasemodule.getUsers())
+    // console.log(databasemodule.getUsers("UTCRXTV5L"))
 }
 
-fetchUsers();
+// fetchUsers();
 
 
 async function getChannel() {
@@ -129,7 +131,7 @@ async function getChannel() {
     token: process.env.SLACK_APP_TOKEN_ID,
     types :  "mpim, im" 
   });
-  console.log(result);
+  // console.log(result);
   return result.channels;
 // saveUsers(result.members);
   }

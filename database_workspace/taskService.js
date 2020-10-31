@@ -1,5 +1,16 @@
 const task_queries = require("./taskDAO")
 
+const thanksForVol = [
+    {
+        "name" : "Thanks for volunteering",
+        "action" : "nothing"
+    }
+];
+
+const nothing = async function(){
+    return thanksForVol;
+}
+
 const AddTask = async function(title , description , deadline , user_id){
     return await task_queries.addTask(title , description , deadline , user_id);
 }
@@ -17,7 +28,17 @@ const GetMyClosedTasks = async function(user_id){
 }
 
 const GetFriendsActiveTasks = async function(user_id){
-return await task_queries.getFriendsActiveTasks(user_id);
+    var data = await task_queries.getFriendsActiveTasks(user_id);
+    data = await data.getUser.friends;
+    console.log("tasks -> ",data);
+    return data;
+}
+
+const GetBestFriendsActiveTasks = async function(user_id){
+    var data = await task_queries.getBestFriendsActiveTasks(user_id);
+    data = await data.getUser.best_friends;
+    console.log("tasks -> ",data);
+    return data;
 }
 
 const GetTasksUsingUserId = async function(user_id){
@@ -49,6 +70,7 @@ const ViewAssignedTasks = async function(){
 }
 
 const VolunteerTask = async function(task_id , user_id){
+    // console.log(taks)
     return await task_queries.volunteerTask(task_id , user_id);
 }
 
@@ -60,12 +82,19 @@ const ViewVolunteeredTasks = async function(user_id){
     return await task_queries.viewVolunteeredTasks(user_id);
 }
 
+const ViewVolunteers = async function(task_id){
+    var data = await task_queries.viewVolunteers(task_id);
+    console.log(data);
+    return data;
+}
+
 module.exports = {
     "addTask" : AddTask,
     "getMyTasks" : GetMyTasks,
     "getMyActiveTasks" : GetMyActiveTasks,
     "getMyClosedTasks" : GetMyClosedTasks,
     "getFriendsActiveTasks" : GetFriendsActiveTasks,
+    "getBestFriendsActiveTasks" : GetBestFriendsActiveTasks,
     "getTasksUsingUserId" : GetTasksUsingUserId,
     "removeTask" : RemoveTask,
     "assignTask" : AssignTask,
@@ -74,5 +103,6 @@ module.exports = {
     "backoutFromTask" :  BackoutFromTask,
     "volunteerTask" :  VolunteerTask,
     "updateTask" :  UpdateTask,
-    "viewAssignedTasks" : ViewAssignedTasks
+    "viewAssignedTasks" : ViewAssignedTasks,
+    "viewVolunteers": ViewVolunteers
 };

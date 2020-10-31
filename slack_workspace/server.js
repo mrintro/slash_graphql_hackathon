@@ -5,7 +5,7 @@ const express = require('express');
 const {createMessageAdapter} = require('@slack/interactive-messages');
 const {createEventAdapter} = require('@slack/events-api');
 const {WebClient} = require('@slack/web-api');
-
+const dbmodule = require('../database_workspace/taskService.js');
 const axios = require('axios');
 const bodyParser = require('body-parser');
 const { response } = require('express');
@@ -56,14 +56,31 @@ slackEvents.on('message',(message, body) => {
 slackInteraction.action('user_button', async (message, respond)=> {
     const reply = await actionController(message);
     return reply;
+});
+
+slackInteraction.action('task_button', async (message, respond)=> {
+    // console.log("message" , message);
+    const reply = await actionController(message);
+    return reply;
 })
 
 
 slackInteraction.viewSubmission({callbackId: 'interactive-submit'}, async(message, respond) => {
-    console.log("message", message);
+    // console.log("message", message);
+    console.log("object");
+    let object = {
+        "user_id" : message.user.id
+    };
+    let vals = message.view.state.values;
+    for(diffvalue in vals){
+        for(types in vals[diffvalue]){
+            object[types] = vals[diffvalue][types].value;
+        }
+    }
+    await dbmodule.addTask(object.title, object.description, object.deadline, object.user_id);
     return {
-        text: 'Thanks!',
-      };
+        "response_action": "clear"
+      }
 });
 
 

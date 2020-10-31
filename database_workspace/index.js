@@ -43,16 +43,17 @@ async function fetchGraphQL(operationsDoc, operationName, variables) {
 
 /* ADD A USER */
 const AddUser = async function (id , username , name , email , profile_picture , channel_id){
+  
    const operationsDoc = `
     mutation AddUser {
         addUser(input: [
             {
                 user_id: "` + id + `",
-                username:"` + username.toLowerCase(); + `", 
-                name: "` + name.toLowerCase(); + `" ,
-                email: "` + email.toLowerCase(); + `" ,
+                username:"` + username + `", 
+                name: "` + name + `" ,
+                email: "` + email + `" ,
                 profile_picture: "` + profile_picture + `",
-                channel_id : "` + channel_id + `"
+                channel_id : "` + channel_id + `",
             }]) {
         user {
             username
@@ -80,7 +81,7 @@ const GetUsers = async function(){
         name
         email
         profile_picture
-        channel_id
+        channel_id 
         friends {
           user_id
           username
@@ -106,6 +107,8 @@ const GetUserWithUserId = async function (user_id){
     const operationsDoc = `query GetUserWithUserId{
         getUser(user_id: "` + user_id + `"){
           user_id
+          name
+          username
           channel_id
           friends{
               user_id
@@ -137,7 +140,7 @@ const GetUserWithUserId = async function (user_id){
 const GetUserWithUsername = async function (username){
     const operationsDoc = `
     query GetUserWithUsername {
-        queryUser(filter: {username: {eq: "` + username.toLowerCase(); + `"}}) {
+        queryUser(filter: {username: {eq: "` + username + `"}}) {
           user_id
           name
           username
@@ -155,19 +158,19 @@ const GetUserWithUsername = async function (username){
 const SearchUserWithName = async function(name){
     const operationsDoc = `
     query GetUsersWithName  {
-        queryUser(filter: {name: {regexp: "/.*` + name.toLowerCase(); + `.*/"}}) {
+        queryUser(filter: {name: {regexp: "/.*` + name + `.*/"}}) {
             user_id
             name
             username
             email
             profile_picture
-            channel_id
         }
     }
     `;
     console.log("getting response");
     const response = await executeQueryOrMutation(operationsDoc , "GetUsersWithName");
     console.log("rec res ",response);
+    console.log(response[0]);
     return response;
 }
 
@@ -176,8 +179,9 @@ const GetMyFriends = async function (user_id){
     const operationsDoc = `
     query GetMyFriends {
         getUser(user_id: "` + user_id + `") {
-          channel_id
+          #channel_id
            friends{
+             name
              user_id
              username
              channel_id
@@ -195,8 +199,9 @@ const GetMyBestFriends = async function (user_id){
     const operationsDoc = `
     query GetMyBestFriends {
         getUser(user_id: "` + user_id + `") {
-          channel_id
+          #channel_id
            best_friends{
+             name
              user_id
              username
              channel_id
@@ -216,8 +221,9 @@ const GetMyReceivedRequests = async function (user_id){
 
         getUser(user_id: "` + user_id + `") {
           user_id  
-          channel_id
+          #channel_id
             received_requests{
+            name
              user_id
              channel_id
              username
@@ -238,8 +244,9 @@ const GetMySentRequests = async function (user_id){
           user_id
           channel_id
            sent_requests{
+             name
              user_id
-             channel_id
+             #hannel_id
              username
            }
          }
