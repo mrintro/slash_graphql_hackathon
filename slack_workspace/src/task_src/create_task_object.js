@@ -15,7 +15,7 @@ module.exports = function (){
                     "type": "input",
                     "element": {
                         "type": "plain_text_input",
-                        "action_id": "sl_input",
+                        "action_id": "title",
                         "placeholder": {
                             "type": "plain_text",
                             "text": "For example : 'Bring a pen'"
@@ -30,7 +30,7 @@ module.exports = function (){
                     "type": "input",
                     "element": {
                         "type": "plain_text_input",
-                        "action_id": "sl_input",
+                        "action_id": "deadline",
                         "placeholder": {
                             "type": "plain_text",
                             "text": "5PM, 2nd November 2010"
@@ -45,7 +45,7 @@ module.exports = function (){
                     "type": "input",
                     "element": {
                         "type": "plain_text_input",
-                        "action_id": "ml_input",
+                        "action_id": "description",
                         "multiline": true,
                         "placeholder": {
                             "type": "plain_text",

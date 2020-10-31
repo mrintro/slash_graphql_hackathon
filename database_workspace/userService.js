@@ -4,7 +4,50 @@ const next_button = require("../slack_workspace/src/users_src/nextButton")
 const error_button = [{
     "name" : "This button has expired",
     "action" : "nothing"
-}]
+}];
+const friends_buttons = [{
+        "name" : "Remove from Friends",
+        "action" : "removeFriend"
+    },
+    {
+        "name" : "Send Best Friend Request",
+        "action" : "sendBestFriendRequest"
+    }
+];
+const best_friends_buttons = [{
+    "name" : "Remove from Best Friends",
+    "action" : "removeBestFriend"
+}];
+const sent_requests_buttons = [{
+    "name" : "Cancel Friend Request",
+    "action" : "cancelFriendRequest"
+}];
+const received_requests_buttons = [{
+    "name" : "Accept Friend Request",
+    "action" : "acceptFriendRequest"
+}, 
+{
+    "name" : "Decline Friend Request",
+    "action" : "declineFriendRequest"
+}];
+const sent_best_friend_requests_buttons = [{
+    "name" : "Cancel Best Friend Request",
+    "action" : "cancelBestFriendRequest"
+}];
+const received_bf_req_buttons = [{
+    "name" : "Accept Best Friend Request",
+    "action" : "acceptBestFriendRequest"
+}, 
+{
+    "name" : "Decline Best Friend Request",
+    "action" : "declineBestFriendRequest"
+}];
+const send_friend_request_button = [
+{
+    "name" : "Send Friend Request",
+    "action" : "sendFriendRequest"
+}];
+
 
 function toTitleCase(str) {
     return str.replace(/\w\S*/g, function(txt){
@@ -13,7 +56,7 @@ function toTitleCase(str) {
 }
 
 const checkRelation = async function(relation , user_data , user2_id){
-    console.log(user2_id);
+    // console.log(user2_id);
     for(var i = 0; i < user_data[relation].length; i++){
         if(user_data[relation][i]["user_id"] == user2_id){
             return 1;
@@ -27,8 +70,8 @@ const addRelationButtons = async function(all_users , user_data){
     if(all_users.length == undefined){
         all_users = [all_users];
     }
-    console.log(all_users);
-    console.log(typeof(all_users));
+    // console.log(all_users);
+    // console.log(typeof(all_users));
     for(var i = 0; i < all_users.length; i++){
         all_users[i]["name"] = await toTitleCase(all_users[i]["name"]);
         all_users[i]["username"] = await toTitleCase(all_users[i]["username"]);
@@ -39,83 +82,51 @@ const addRelationButtons = async function(all_users , user_data){
         var friend = await checkRelation("friends" , user_data , friend_user_id);
         var buttons = [];
         if(friend == 1){
-            buttons = [{
-                    "name" : "Remove from Friends",
-                    "action" : "removeFriend"
-                },
-                {
-                    "name" : "Send Best Friend Request",
-                    "action" : "sendBestFriendRequest"
-                }
-            ];
+            buttons = friends_buttons;
         }
         var best_friend = await checkRelation("best_friends" , user_data , friend_user_id);
         if(best_friend == 1){
-            buttons = [{
-                "name" : "Remove from Best Friends",
-                "action" : "removeBestFriend"
-            }];
+            buttons = best_friends_buttons;
         }
         var sent_friend_req = await checkRelation("sent_requests" , user_data , friend_user_id);
         if(sent_friend_req == 1){
-            buttons = [{
-                "name" : "Cancel Friend Request",
-                "action" : "cancelFriendRequest"
-            }];
+            buttons = sent_requests_buttons;
         }
         var received_friend_req = await checkRelation("received_requests" , user_data , friend_user_id);
         if(received_friend_req == 1){
-            buttons = [{
-                "name" : "Accept Friend Request",
-                "action" : "acceptFriendRequest"
-            }, 
-            {
-                "name" : "Decline Friend Request",
-                "action" : "declineFriendRequest"
-            }];
+            buttons = received_requests_buttons;
         }
         var sent_bf_req = await checkRelation("sent_best_friend_requests" , user_data , friend_user_id);
         if(sent_bf_req == 1){
-            buttons = [{
-                "name" : "Cancel Best Friend Request",
-                "action" : "cancelBestFriendRequest"
-            }];
+            buttons = sent_best_friend_requests_buttons;
         }
         var rec_bf_req = await checkRelation("received_best_friend_requests" , user_data , friend_user_id);
-        
         if(rec_bf_req == 1){
-            buttons = [{
-                "name" : "Accept Best Friend Request",
-                "action" : "acceptBestFriendRequest"
-            }, 
-            {
-                "name" : "Decline Best Friend Request",
-                "action" : "declineBestFriendRequest"
-            }];
+            buttons = received_bf_req_buttons;
         }
-        console.log(buttons);
+        // console.log(buttons);
         if(buttons.length == 0){
-            buttons = [
-                {
-                    "name" : "Send Friend Request",
-                    "action" : "sendFriendRequest"
-                }];
+            buttons = send_friend_request_button;
         }
         all_users[i]["buttons"] = buttons;
-        console.log(all_users[i]);
+        // console.log(all_users[i]);
     }
     return all_users;
 }
 
 /* ADD A USER */
 const AddUser = async function (id , username , name , email , profile_picture , channel_id){
+    username = await username.toLowerCase();
+    name = await name.toLowerCase();
+    email = await email.toLowerCase();
+    // console.log("userService" , username , name , id);
     return await database_queries.addUser(id , username , name , email , profile_picture , channel_id);
 }
  
  /* GET ALL USERS(ONLY FOR ADMINS) */
 const GetUsers = async function(my_user_id){
     var all_users = await database_queries.getUsers() , user_data = await database_queries.getUserWithUserId(my_user_id);
-    console.log("data -> " , all_users , user_data);
+    // console.log("data -> " , all_users , user_data);
     all_users = await all_users.queryUser;
     user_data = await user_data.getUser;
     
@@ -133,23 +144,25 @@ const GetUsers = async function(my_user_id){
 const GetUserWithUserId = async function (my_user_id , user_id){
 
     var all_users = await database_queries.getUserWithUserId(user_id) , user_data = await database_queries.getUserWithUserId(my_user_id);
-    console.log("data -> " , all_users , user_data);
+    // console.log("data -> " , all_users , user_data);
     all_users = await all_users.getUser;
     user_data = await user_data.getUser;
     
 
     all_users = await addRelationButtons(all_users , user_data);
-    console.log("Final data -> " , all_users);
+    // console.log("Final data -> " , all_users);
     return all_users;
 }
 
 /* GET A USER WITH USERNAME */
 const GetUserWithUsername = async function (my_user_id , username){
+    username = await username.toLowerCase();
+
     var all_users = await database_queries.getUserWithUsername(username) , user_data = await database_queries.getUserWithUserId(my_user_id);
-    console.log("data -> " , all_users , user_data);
+    // console.log("data -> " , all_users , user_data);
     all_users = await all_users.queryUser;
     user_data = await user_data.getUser;
-    console.log(all_users);
+    // console.log(all_users);
 
     all_users = await addRelationButtons(all_users , user_data);
 
@@ -158,6 +171,7 @@ const GetUserWithUsername = async function (my_user_id , username){
 
 /* GET ALL USERS WITH NAME */
 const SearchUserWithName = async function(my_user_id , name){
+    name = await name.toLowerCase();
     // console.log("name->",name);
     var all_users = await database_queries.searchUserWithName(name) , user_data = await database_queries.getUserWithUserId(my_user_id);
     // console.log("data -> " , all_users , user_data);
@@ -172,16 +186,31 @@ const SearchUserWithName = async function(my_user_id , name){
 
 /* VIEW MY FRIENDS */
 const GetMyFriends = async function (user_id){
-    return await database_queries.getMyFriends(user_id);
+    var all_users = await database_queries.getMyFriends(user_id);
+    // console.log(all_users);
+    all_users = all_users.getUser.friends;
+    
+    for(var i = 0; i < all_users.length; i++){
+        all_users[i]["buttons"] = friends_buttons;
+    }
+    return all_users;
 }
 
 /* VIEW MY BEST FRIENDS */
 const GetMyBestFriends = async function (user_id){
-    return await database_queries.getMyBestFriends(user_id);
+    var all_users = await database_queries.getMyBestFriends(user_id);
+    // console.log("all users " , all_users);
+    all_users = await all_users.getUser.best_friends;
+
+    for(var i = 0; i < all_users.length; i++){
+        all_users[i]["buttons"] = best_friends_buttons;
+    }
+    return all_users;
 }
 
 /* VIEW MY RECEIVED REQUESTS */
 const GetMyReceivedRequests = async function (user_id){
+
     return await database_queries.getMyReceivedRequests(user_id);
 }
 
@@ -206,36 +235,36 @@ const SendFriendRequest = async function (my_user_id , friend_user_id){
 
     var user_data = await database_queries.getUserWithUserId(my_user_id);
     user_data = await user_data.getUser;
-    console.log("My Data -> ",user_data , my_user_id , friend_user_id);
+    // console.log("My Data -> ",user_data , my_user_id , friend_user_id);
     var friend = await checkRelation("friends" , user_data , friend_user_id);
     // console.log("friends -> ",friends);
     if(friend == 1){
-        console.log("friends hai");
+        // console.log("friends hai");
         return error_button;
     }
     var best_friend = await checkRelation("best_friends" , user_data , friend_user_id);
     if(best_friend == 1){
-        console.log("best friends");
+        // console.log("best friends");
         return error_button;
     }
     var sent_friend_req = await checkRelation("sent_requests" , user_data , friend_user_id);
     if(sent_friend_req == 1){
-        console.log("sent friends");
+        // console.log("sent friends");
         return error_button;
     }
     var received_friend_req = await checkRelation("received_requests" , user_data , friend_user_id);
     if(received_friend_req == 1){
-        console.log("rec friends");
+        // console.log("rec friends");
         return error_button;
     }
     var sent_bf_req = await checkRelation("sent_best_friend_requests" , user_data , friend_user_id);
     if(sent_bf_req == 1){
-        console.log("sent best friends");
+        // console.log("sent best friends");
         return error_button;
     }
     var rec_bf_req = await checkRelation("received_best_friend_requests" , user_data , friend_user_id);
     if(rec_bf_req == 1){
-        console.log("rec best friends");
+        // console.log("rec best friends");
         return error_button;
     }
 
@@ -255,6 +284,11 @@ const CancelFriendRequest = async function(my_user_id , friend_user_id){
     }
     var best_friend = await checkRelation("best_friends" , user_data , friend_user_id);
     if(best_friend == 1){
+        return error_button;
+    }
+    var sent_friend_req = await checkRelation("sent_requests" , user_data , friend_user_id);
+    if(sent_friend_req == 0){
+        // console.log("sent friends");
         return error_button;
     }
     var received_friend_req = await checkRelation("received_requests" , user_data , friend_user_id);
