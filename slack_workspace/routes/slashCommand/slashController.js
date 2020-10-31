@@ -5,6 +5,7 @@ const create_user_object = require('../../src/users_src/create_user_object');
 const create_task_object = require('../../src/task_src/create_task_object');
 const {WebClient} = require('@slack/web-api');
 const { App, LogLevel } = require("@slack/bolt");
+const dbmodule = require('../../../database_workspace/userService')
 
 const app = new App({
   token: process.env.SLACK_APP_TOKEN_ID,
