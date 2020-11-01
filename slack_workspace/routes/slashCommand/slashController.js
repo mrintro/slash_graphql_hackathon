@@ -196,4 +196,94 @@ module.exports = async (req, res, next) => {
         
         res.send(message);
     }
+
+    else if(req.body.command === '/list-received-friend-requests'){
+        let search_response = await dbmodule.getMyReceivedRequests(req.body.user_id);
+        let heading = `Received Friend Requests`;
+        if(search_response.length == 0){
+            heading = `No received friend requests`;
+        }
+
+        let message = {
+            "text": heading,
+            "response_type" : 'in_channel', 
+            "attachments" : []
+        };
+        search_response = await search_response;
+        message.attachments.push(...create_heading(heading));
+        var count = 0;
+        for(user of search_response){
+            message.attachments.push(...create_user_object(user));
+            count++;
+        }
+        res.send(message);
+    }
+
+    else if(req.body.command === '/list-sent-friend-requests'){
+        let search_response = await dbmodule.getMySentRequests(req.body.user_id);
+        let heading = `Sent Friend Requests`;
+        if(search_response.length == 0){
+            heading = `No sent friend requests`;
+        }
+
+        let message = {
+            "text": heading,
+            "response_type" : 'in_channel', 
+            "attachments" : []
+        };
+        search_response = await search_response;
+        message.attachments.push(...create_heading(heading));
+        var count = 0;
+        for(user of search_response){
+            message.attachments.push(...create_user_object(user));
+            count++;
+        }
+        res.send(message);
+    }
+
+    else if(req.body.command === '/list-received-friend-requests'){
+        let search_response = await dbmodule.getMyReceivedRequests(req.body.user_id);
+        let heading = `Received Friend Requests`;
+        if(search_response.length == 0){
+            heading = `No received friend requests`;
+        }
+
+        let message = {
+            "text": heading,
+            "response_type" : 'in_channel', 
+            "attachments" : []
+        };
+        search_response = await search_response;
+        message.attachments.push(...create_heading(heading));
+        var count = 0;
+        for(user of search_response){
+            message.attachments.push(...create_user_object(user));
+            count++;
+        }
+        res.send(message);
+    }
+
+    else if(req.body.command === '/list-sent-friend-requests'){
+        let search_response = await dbmodule.getMySentRequests(req.body.user_id);
+        let heading = `Sent Friend Requests`;
+        if(search_response.length == 0){
+            heading = `No sent friend requests`;
+        }
+
+        let message = {
+            "text": heading,
+            "response_type" : 'in_channel', 
+            "attachments" : []
+        };
+        search_response = await search_response;
+        message.attachments.push(...create_heading(heading));
+        var count = 0;
+        for(user of search_response){
+            message.attachments.push(...create_user_object(user));
+            count++;
+        }
+        res.send(message);
+    }
+
+
 }

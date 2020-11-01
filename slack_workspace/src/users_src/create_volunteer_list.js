@@ -1,4 +1,4 @@
-module.exports = function (details,count){
+module.exports = function (details,taskID,count=0){
     // console.log("details " , details);
     return [{
         "fallback": "User not found. Sorry.",
@@ -19,7 +19,7 @@ module.exports = function (details,count){
                 "name": "assignTask",
                 "text": "Assign Task",
                 "type": "button",
-                "value": "assignTask" + " " + details.user_id
+                "value": "assignTask" + " " + details.user_id+" "+taskID
             }
         ]
     }] 

@@ -41,6 +41,17 @@ async function fetchGraphQL(operationsDoc, operationName, variables) {
     return await data;
   }
 
+/* GET CHANNEL ID */
+const GetChannelId = async function(user_id){
+  const operationDoc = `query GetChannelID{
+    getUser(user_id : "` + user_id + `"){
+      channel_id
+    }
+  }`;
+  var data = await executeQueryOrMutation(operationDoc , "GetChannelID");
+  return data;
+}
+
 /* ADD A USER */
 const AddUser = async function (id , username , name , email , profile_picture , channel_id){
   
@@ -66,7 +77,7 @@ const AddUser = async function (id , username , name , email , profile_picture ,
         }
     }
     `;
-    console.log(operationsDoc);
+    // console.log(operationsDoc);
     var data = await executeQueryOrMutation(operationsDoc , "AddUser");
     return data;
 }
@@ -223,7 +234,7 @@ const GetMyReceivedRequests = async function (user_id){
           user_id  
           #channel_id
             received_requests{
-            name
+             name
              user_id
              channel_id
              username
@@ -247,6 +258,11 @@ const GetMySentRequests = async function (user_id){
              name
              user_id
              #hannel_id
+             username
+           }
+           sent_best_friend_requests{
+             name
+             user_id
              username
            }
          }
@@ -672,7 +688,8 @@ module.exports = {
   "acceptBestFriendRequest" : AcceptBestFriendRequest,
   "declineBestFriendRequest" : DeclineBestFriendRequest,
   "removeFriend" : RemoveFriend,
-  "removeBestFriend" :  RemoveBestFriend
+  "removeBestFriend" :  RemoveBestFriend,
+  "getChannelId" : GetChannelId
 }
 // GetUsers("000");
 // AddUser("001" , "shashank2409" , "Shashank Gupta" , "sha@gmail.com" , "no");

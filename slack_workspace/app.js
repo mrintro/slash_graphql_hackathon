@@ -35,21 +35,21 @@ function slackSlashCommand(req, res, next) {
 /*
 
 slackInteractions.action({ type: 'button' }, (payload, respond) => {
-    // Logs the contents of the action to the console
-    console.log('payload', payload);
+    Logs the contents of the action to the console
+    // console.log('payload', payload);
   
     doWork()
       .then(() => {
-          console.log("responding to button")
+          // console.log("responding to button")
         respond({ text: 'Processing complete.', replace_original: true });
       })
       .catch((error) => {
-          console.log("there is an error");
+          // console.log("there is an error");
         respond({ text: 'Sorry, there\'s been an error. Try again later.',  replace_original: true });
       });
   
     // Return a replacement message
-      console.log("patani kaha");
+      // console.log("patani kaha");
     return { text: 'Processing...' };
   });
 
@@ -100,17 +100,17 @@ async function fetchUsers() {
         return _.extend(item, _.findWhere(channel_result, {user : item.id}));
     });
     // console.log("final_results", merged_results)
-    // saveUsers(merged_results);
+    saveUsers(merged_results);
   }
   catch (error) {
-    console.error(error);
+    // console.error(error);
   }
 }
 async function saveUsers(usersArray) {
     let userId = '';
     usersArray.forEach(async function(user){
         if(user.is_bot==false){
-            // console.log("username" , user.user);
+            console.log("username" , user.user);
             // console.log("name" , user.name);
             var temp = await databasemodule.addUser(user.user, user.name, user.real_name, user.profile.email, user.profile.image_72, user.id);
             // console.log("adding user "+user.name);
@@ -122,7 +122,7 @@ async function saveUsers(usersArray) {
     // console.log(databasemodule.getUsers("UTCRXTV5L"))
 }
 
-// fetchUsers();
+fetchUsers();
 
 
 async function getChannel() {
@@ -144,93 +144,6 @@ async function getChannel() {
 
 (async () =>{
     await app.start(5010);
-    console.log("Bot Active at 5010");
+    // console.log("Bot Active at 5010");
 })();
 
-
-//slack integration ahea
-
-/*
-
-
-
-slackInteractions.action({ type: 'static_select' }, (payload, respond) => {
-    // Logs the contents of the action to the console
-    console.log('payload', payload);
-  
-    // Send an additional message to the whole channel
-    doWork()
-      .then(() => {
-        respond({ text: 'Thanks for your submission.' });
-      })
-      .catch((error) => {
-        respond({ text: 'Sorry, there\'s been an error. Try again later.' });
-      });
-  
-    // If you'd like to replace the original message, use `chat.update`.
-    // Not returning any value.
-  });
-  
-  // Example of handling all message actions
-  slackInteractions.action({ type: 'message_action' }, (payload, respond) => {
-    // Logs the contents of the action to the console
-    console.log('payload', payload);
-  
-    // Send an additional message only to the user who made interacted, as an ephemeral message
-    doWork()
-      .then(() => {
-        respond({ text: 'Thanks for your submission.', response_type: 'ephemeral' });
-      })
-      .catch((error) => {
-        respond({ text: 'Sorry, there\'s been an error. Try again later.', response_type: 'ephemeral' });
-      });
-  
-    // If you'd like to replace the original message, use `chat.update`.
-    // Not returning any value.
-  });
-  
-  // Example of handling all dialog submissions
-  slackInteractions.action({ type: 'dialog_submission' }, (payload, respond) => {
-    // Validate the submission (errors is of the shape in https://api.slack.com/dialogs#input_validation)
-    const errors = validate(payload.submission);
-  
-    // Only return a value if there were errors
-    if (errors) {
-      return errors;
-    }
-  
-    // Send an additional message only to the use who made the submission, as an ephemeral message
-    doWork()
-      .then(() => {
-        respond({ text: 'Thanks for your submission.', response_type: 'ephemeral' });
-      })
-      .catch((error) => {
-        respond({ text: 'Sorry, there\'s been an error. Try again later.', response_type: 'ephemeral' });
-      });
-  });
-  
-  // Example of handling attachment actions. This is for button click, but menu selection would use `type: 'select'`.
-  slackInteractions.action({ type: 'button' }, (payload, respond) => {
-    // Logs the contents of the action to the console
-    console.log('payload', payload);
-  
-    doWork()
-      .then(() => {
-        respond({ text: 'Processing complete.', replace_original: true });
-      })
-      .catch((error) => {
-        respond({ text: 'Sorry, there\'s been an error. Try again later.',  replace_original: true });
-      });
-  
-    // Return a replacement message
-    return { text: 'Processing...' };
-  });
-
-
-
-(async ()=> {
-    await slackInteractions.start(4000);
-    console.log("listening on port 4000");
-});
-
-*/

@@ -114,6 +114,15 @@ const addRelationButtons = async function(all_users , user_data){
     return all_users;
 }
 
+
+/**GET CHANNEL ID */
+
+const GetChannelId = async function(user_id){
+    var data = await database_queries.getChannelId(user_id);
+    // data = data.
+    return data;
+}
+
 /* ADD A USER */
 const AddUser = async function (id , username , name , email , profile_picture , channel_id){
     username = await username.toLowerCase();
@@ -137,6 +146,11 @@ const GetUsers = async function(my_user_id){
     //     console.log(user);
     // }
 
+    return all_users;
+}
+
+const GetUserWithUserID2 = async function(user_id){
+    var all_users = await database_queries.getUserWithUserId(user_id);
     return all_users;
 }
 
@@ -210,13 +224,30 @@ const GetMyBestFriends = async function (user_id){
 
 /* VIEW MY RECEIVED REQUESTS */
 const GetMyReceivedRequests = async function (user_id){
-
-    return await database_queries.getMyReceivedRequests(user_id);
+    var all_users = await database_queries.getMyReceivedRequests(user_id);
+    // console.log(all_users);
+    all_users = all_users.getUser.received_requests;
+    
+    for(var i = 0; i < all_users.length; i++){
+        all_users[i]["buttons"] = received_requests_buttons;
+    }
+    return all_users;
 }
 
 /* VIEW MY SENT REQUESTS */
 const GetMySentRequests = async function (user_id){
-    return await database_queries.getMySentRequests(user_id);
+    var all_users = await database_queries.getMySentRequests(user_id);
+    console.log(all_users);
+    var all_users1 = all_users.getUser.sent_requests;
+    var all_users2 = all.users.getUser.sent_best_friend_requests;
+    for(var i = 0; i < all_users1.length; i++){
+        all_users1[i]["buttons"] = sent_requests_buttons;
+    }
+    for(var i = 0; i < all_users2.length; i++){
+        all_users2[i]["buttons"] = sent_best_friend_requests_buttons;
+    }
+    all_users1.push(...all_users2);
+    return all_users1;
 }
 
 /* SEND FRIEND REQUEST */
@@ -560,10 +591,14 @@ module.exports = {
     "declineBestFriendRequest" : DeclineBestFriendRequest,
     "removeFriend" : RemoveFriend,
     "removeBestFriend" :  RemoveBestFriend,
+    "getChannelId" : GetChannelId,
+    "received_requests_buttons" : received_requests_buttons,
+    "received_bf_req_buttons" : received_bf_req_buttons,
+    "getUserWithUserID2" : GetUserWithUserID2,
     "nothing" : Nothing
   }
 
-GetUsers("U01AMFZCCEP");
+// GetUsers("U01AMFZCCEP");
 // SearchUserWithName("003" , "Shashank");
 // GetUserWithUserId("003" , "001");
 // GetUserWithUsername("001" , "ria0412");

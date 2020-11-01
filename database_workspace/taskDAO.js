@@ -450,6 +450,7 @@ const GetMyTasks = async function (user_id){
       getTask(task_id : "` + task_id + `"){
         title
         volunteered_by{
+          user_id
           username
           name
           profile_picture

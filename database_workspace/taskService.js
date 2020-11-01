@@ -30,14 +30,14 @@ const GetMyClosedTasks = async function(user_id){
 const GetFriendsActiveTasks = async function(user_id){
     var data = await task_queries.getFriendsActiveTasks(user_id);
     data = await data.getUser.friends;
-    console.log("tasks -> ",data);
+    // console.log("tasks -> ",data);
     return data;
 }
 
 const GetBestFriendsActiveTasks = async function(user_id){
     var data = await task_queries.getBestFriendsActiveTasks(user_id);
     data = await data.getUser.best_friends;
-    console.log("tasks -> ",data);
+    // console.log("tasks -> ",data);
     return data;
 }
 
@@ -62,6 +62,7 @@ const ViewTaskStatusUsingTaskId = async function(task_id){
 }
 
 const AssignTask = async function(task_id , alloted_user_id){
+    // console.log("aaya allot krne");
     return await task_queries.assignTask(task_id , alloted_user_id);
 }
 
@@ -70,7 +71,7 @@ const ViewAssignedTasks = async function(){
 }
 
 const VolunteerTask = async function(task_id , user_id){
-    // console.log(taks)
+    // console.log('volunteering for tasks')
     return await task_queries.volunteerTask(task_id , user_id);
 }
 
@@ -84,7 +85,7 @@ const ViewVolunteeredTasks = async function(user_id){
 
 const ViewVolunteers = async function(task_id){
     var data = await task_queries.viewVolunteers(task_id);
-    console.log(data);
+    // console.log(data);
     return data;
 }
 

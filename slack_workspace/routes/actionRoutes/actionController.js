@@ -6,23 +6,29 @@ const dbmodule = require('../../../database_workspace/userService');
 const dbTaskModule = require('../../../database_workspace/taskService');
 const volunteerList = require('../../src/users_src/create_volunteer_list');
 const {WebClient} = require('@slack/web-api');
+const create_user_object = require('../../src/users_src/create_user_object');
 
 const web = new WebClient(process.env.SLACK_APP_TOKEN_ID);
 
 module.exports = async (req_body) => {
-    // console.log("req body", req_body);
+    console.log("req body", req_body);
     // console.log("message", req_body.original_message);
 
     let valueOfAction = req_body.actions[0].value;
     let userID1 = req_body.user.id;
+    console.log(valueOfAction);
     let userID2 = valueOfAction.split(" ")[1];
+    console.log("req_body",req_body);
     const attachmentID = req_body.attachment_id;
     let reply = req_body.original_message;
-    console.log(req_body);
-
-
+    console.log(userID1, userID2);
+    // console.log("initial:",reply.attachments[0].fields);
     if(valueOfAction.split(" ")[0] === "viewVolunteers"){
-        /**userID1 is Task ID and UserID2 is the posted_by_user_id */
+        /**userID1 is posted_by_user_id and UserID2 is the Task ID  */
+
+        // console.log(userID1, console.log(userID2));
+
+
         let actionNew = await dbTaskModule.viewVolunteers(userID2);
         delete reply.attachments[attachmentID-1].actions;
         let obj = {
@@ -36,64 +42,68 @@ module.exports = async (req_body) => {
             let payload = {
                 "attachments" :[]
             }
+            let count=0;
             for(user of volunteers){
-                payload.attachments.push(...volunteerList(user))
+                console.log(user);
+                payload.attachments.push(...volunteerList(user, userID2,count));
+                count+=1;
             }
             // let payload = volunteerList(volunteers);
-            console.log(payload);
+            // console.log(payload);
             return payload;
         }
-        return reply;
-    }
-
+    };
     if(valueOfAction.split(" ")[0] === "assignTask"){
-        /**userID1 is Task ID and UserID2 is the posted_by_user_id */
-        let actionNew = await dbTaskModule.assignTask(userID2, userID1);
+        /**userID1 is posted_by_user_id and UserID2 is the Task ID  */
+        let task_id = valueOfAction.split(" ")[2];
+        let assigned_user_id = valueOfAction.split(" ")[1];
+        let actionNew = await dbTaskModule.assignTask(task_id, assigned_user_id);
+        console.log(actionNew);
         delete reply.attachments[attachmentID-1].actions;
-        let obj = {
-            "buttons" : [{
-                "name" : "This user has been alloted the task",
-                "action" : "alloted"
-            }],
-            "user_id" : userID2
-        }
-        reply.attachments[attachmentID-1].actions = buttonBuilder(obj);
-        console.log("reply2", reply.attachments);
+        reply.attachments[attachmentID-1].footer = `This user has been alloted the task. \nText <@${assigned_user_id}>`
+        let channelID_friend = await dbUserModules.getChannelId(assigned_user_id);
+        channelID_friend = channelID_friend.getUser.channel_id;
+        web.chat.postMessage({
+            channel : channelID_friend,
+            text : `Duty Calls.! Your Friend <@${userID1}> trusts you the most with this task. Contact <@${userID1}> ASAP.`
+        })
         return reply;
     }
 
     if(valueOfAction.split(" ")[0] === "volunteerTask"){
-        /**userID1 is Task ID and UserID2 is the posted_by_user_id */
-        let actionNew = await dbTaskModule.volunteerTask(userID2, userID1);
+        console.log(userID1, userID2);
+        await dbTaskModule.volunteerTask(userID2, userID1);
+        console.log("volunteering action done");
+        let task_owner = reply.attachments[attachmentID-1].fields[3].value;
         delete reply.attachments[attachmentID-1].actions;
-        let obj = {
-            "buttons" : [{
-                "name" : "Thanks for Volunteering",
-                "action" : "nothing"
-            }],
-            "user_id" : userID2
-        }
-        reply.attachments[attachmentID-1].actions = buttonBuilder(obj);
-        console.log("reply2", reply.attachments);
+        reply.attachments[attachmentID-1].footer = `Thanks for Volunteering. \nStart Conversation ${task_owner}`;
+
+        let channelID_friend = await dbUserModules.getChannelId(task_owner);
+        channelID_friend = channelID_friend.getUser.channel_id;
+        web.chat.postMessage({
+            channel : channelID_friend,
+            text : `Yayy.! Your friends are there to have your back. \n<@${userID1}> have volenteered to do your task for you.\n Check all volenteered tasks by /list-my-tasks`
+        })
+
         return reply;
     }
 
 
     if(valueOfAction.split(" ")[0] === "sendFriendRequest"){
         let actionNew = await dbUserModules.sendFriendRequest(userID1, userID2);
-        console.log("reply1", reply.attachments);
+        console.log("reply1", req_body);
         delete reply.attachments[attachmentID-1].actions;
         let obj = {
             "buttons" : actionNew,
             "user_id" : userID2
         }
-        // (async () => {
-        //     await web.chat.postMessage({
-        //         channel: 
-        //     })
-        // })
+        let channelID_friend = await dbUserModules.getChannelId(userID2);
+        channelID_friend = channelID_friend.getUser.channel_id;
+        web.chat.postMessage({
+            channel : channelID_friend,
+            text : `You have a new friend request from <@${userID1}>\nMake some friends by accepting friend requests\n Access Friend Requests using /list-received-friend-requests `
+        })
         reply.attachments[attachmentID-1].actions = buttonBuilder(obj);
-        console.log("reply2", reply.attachments);
         return reply;
     }
 
@@ -119,6 +129,12 @@ module.exports = async (req_body) => {
             "user_id" : userID2
         }
         reply.attachments[attachmentID-1].actions = buttonBuilder(obj);
+        let channelID_friend = await dbUserModules.getChannelId(userID2);
+        channelID_friend = channelID_friend.getUser.channel_id;
+        web.chat.postMessage({
+            channel : channelID_friend,
+            text : `Wohooo.!! <@${userID1}> accepted your Friend Request`
+        })
         console.log("reply2", reply.attachments);
         return reply;
     }
@@ -157,6 +173,12 @@ module.exports = async (req_body) => {
             "buttons" : actionNew,
             "user_id" : userID2
         }
+        let channelID_friend = await dbUserModules.getChannelId(userID2);
+        channelID_friend = channelID_friend.getUser.channel_id;
+        web.chat.postMessage({
+            channel : channelID_friend,
+            text : `Woah, Seems like <@${userID1}> might think of you as a Best Friend'.\nMake some strong connections by accepting BEST Friend Requests\n Access Friend Requests using /list-best-friend-tasks ` 
+        })
         reply.attachments[attachmentID-1].actions = buttonBuilder(obj);
         console.log("reply2", reply.attachments);
         return reply;
@@ -170,6 +192,12 @@ module.exports = async (req_body) => {
             "buttons" : actionNew,
             "user_id" : userID2
         }
+        let channelID_friend = await dbUserModules.getChannelId(userID2);
+        channelID_friend = channelID_friend.getUser.channel_id;
+        web.chat.postMessage({
+            channel : channelID_friend,
+            text : `Hurrayy.! You have more more person to count on. <@${userID1}> and You are now Best Friends` 
+        })
         reply.attachments[attachmentID-1].actions = buttonBuilder(obj);
         console.log("reply2", reply.attachments);
         return reply;
